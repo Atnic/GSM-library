@@ -14,16 +14,24 @@ private:
 protected:
 
 public:
-  struct HTTTPAction {
-    bool updated = true;
+  struct CallReady {
+    bool updated = false;
+  } callReady;
+  struct EnterPin {
+    bool updated = false;
+    char code[11];
+  } enterPin;
+  struct HttpAction {
+    bool updated = false;
     unsigned char method;
     unsigned int statusCode;
     unsigned int dataLength;
-  } HTTPAction;
+  } httpAction;
 
 	URC();
 
 	bool unsolicitedResultCode(const char urc[]);
+  void resetUnsolicitedResultCode(void);
 };
 
 extern URC urc;

@@ -14,15 +14,15 @@ private:
 	HardwareSerial *hardwareSerial = NULL;
 	SoftwareSerial *softwareSerial = NULL;
 	int powerPin;
-	char response[205];
 	bool debug = false;
+	char response[50];
 	bool echo = true;
-	bool powerDown = false;
 	bool pdu = true;
+	bool powerDown = true;
 
 protected:
 	void debugPrint(const char message[], bool returnChar = false);
-	void debugPrint(const __FlashStringHelper message[], bool returnChar = false);
+	void debugPrint(const __FlashStringHelper *message, bool returnChar = false);
 
 public:
 	DTE(HardwareSerial &hardwareSerial, int pinPower, bool debug = false);
@@ -34,35 +34,32 @@ public:
 
 	void togglePower(void);
 
-	void begin(long speed);
   void clearReceivedBuffer(void);
 
 	bool AT(void);
-	void ATCommand(const char at[]);
-	void ATCommand(const __FlashStringHelper at[]);
+	bool ATCommand(const char at[]);
+	bool ATCommand(const __FlashStringHelper *at);
 
-	bool ATResponse(unsigned long timeout = 1000);
-	bool ATResponseEqual(const char expected[], unsigned long timeout = 1000);
-	bool ATResponseEqual(const __FlashStringHelper expected[], unsigned long timeout = 1000);
-	bool ATResponseContain(const char expected[], unsigned long timeout = 1000);
-	bool ATResponseContain(const __FlashStringHelper expected[], unsigned long timeout = 1000);
+	bool ATResponse(unsigned long timeout = 500);
+	bool ATResponseEqual(const char expected[], unsigned long timeout = 500);
+	bool ATResponseEqual(const __FlashStringHelper *expected, unsigned long timeout = 500);
+	bool ATResponseContain(const char expected[], unsigned long timeout = 500);
+	bool ATResponseContain(const __FlashStringHelper *expected, unsigned long timeout = 500);
+	bool ATResponseOk(unsigned long timeout = 500);
+
+	bool isResponseEqual(const char expected[]);
+	bool isResponseEqual(const __FlashStringHelper *expected);
+	bool isResponseContain(const char expected[]);
+	bool isResponseContain(const __FlashStringHelper *expected);
+	bool isResponseOk(void);
+
+	void setEcho(bool echo) { this->echo = echo; }
+
+	const char *getResponse(void) { return response; }
+	bool isEcho(void) { return echo; }
+	bool isPowerDown(void) { return powerDown; };
 
 	bool powerReset(void);
-
-	bool isResponse(const char expected[]);
-	bool isResponse(const __FlashStringHelper expected[]);
-	bool isResponseContain(const char expected[]);
-	bool isResponseContain(const __FlashStringHelper expected[]);
-
-	void setEcho(bool echo) { this->echo = echo; };
-	void setPowerDown(bool powerDown) { this->powerDown = powerDown; };
-	void setPDU(bool pdu) { this->pdu = pdu; };
-	void setResponse(const char response[]) { strcpy(this->response, response); }
-
-	bool isEcho(void) { return echo; };
-	bool isPowerDown(void) { return powerDown; };
-	bool isPDU(void) { return pdu; };
-	const char *getResponse(void) { return response; };
 };
 
 #endif
