@@ -28,23 +28,31 @@ DTE::DTE(SoftwareSerial &softwareSerial, int powerPin, bool debug) {
 }
 
 int DTE::available(void) {
-	if(hardwareSerial)
-	return hardwareSerial->available();
-	if(softwareSerial)
-	return softwareSerial->available();
+	if(hardwareSerial) return hardwareSerial->available();
+	if(softwareSerial) return softwareSerial->available();
 	return -1;
 }
 
 bool DTE::isListening(void) {
-	if(softwareSerial)
-	return softwareSerial->isListening();
+	if(softwareSerial) return softwareSerial->isListening();
 	return false;
 }
 
 bool DTE::listen(void) {
-	if(softwareSerial)
-	return softwareSerial->listen();
+	if(softwareSerial) return softwareSerial->listen();
 	return false;
+}
+
+size_t DTE::write(const char str[]) {
+	if(hardwareSerial) return hardwareSerial->write(str);
+	if(softwareSerial) return softwareSerial->write(str);
+	return 0;
+}
+
+size_t DTE::readBytes(char buffer[], size_t length) {
+	if(hardwareSerial) return hardwareSerial->readBytes(buffer, length);
+	if(softwareSerial) return softwareSerial->readBytes(buffer, length);
+	return 0;
 }
 
 void DTE::togglePower(void) {

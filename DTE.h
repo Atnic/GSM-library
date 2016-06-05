@@ -1,6 +1,3 @@
-/*
- *
- */
 #ifndef DTE_h
 #define DTE_h
 
@@ -15,50 +12,203 @@ private:
 	SoftwareSerial *softwareSerial = NULL;
 	int powerPin;
 	bool debug = false;
-	char response[50];
+	char response[102];
 	bool echo = true;
 	bool pdu = true;
 	bool powerDown = true;
 
 protected:
+	/**
+	 * Sent debugging message via Serial.
+	 * @param message    Debug message
+	 * @param returnChar true: add new line, false: no new line (default)
+	 */
 	void debugPrint(const char message[], bool returnChar = false);
+
+	/**
+	 * Sent debugging message via Serial.
+	 * @param message    Debug message
+	 * @param returnChar true: add new line, false: no new line (default)
+	 */
 	void debugPrint(const __FlashStringHelper *message, bool returnChar = false);
 
 public:
 	DTE(HardwareSerial &hardwareSerial, int pinPower, bool debug = false);
 	DTE(SoftwareSerial &softwareSerial, int pinPower, bool debug = false);
 
+	/**
+	 * Check received buffer
+	 * @return  Total received char available
+	 */
   int available(void);
+
+	/**
+	 * If using SoftwareSerial, this method is to check whether
+	 * the serial is listening (active)
+	 * @return  true: listening, false: otherwise
+	 */
 	bool isListening(void);
+
+	/**
+	 * Listen (active) SoftwareSerial for this instance
+	 * @return  true: success, false: failed
+	 */
 	bool listen(void);
 
+	/**
+	 * Send string char array
+	 * @param  str String to be sent
+	 * @return     Total successfully sent char
+	 */
+	size_t write(const char str[]);
+
+	/**
+	 * Read bytes received from Serial buffer, and save it on buffer.
+	 * Warning: buffer size must be equal or smaller then length.
+	 * @param  buffer Buffer to be updated
+	 * @param  length Length of received byte that want to be get
+	 * @return        Total successfully read char
+	 */
+	size_t readBytes(char buffer[], size_t length);
+
+	/** Toggle SIM Power, On become Off, and otherwise */
 	void togglePower(void);
 
+	/** Clear received Serial buffer */
   void clearReceivedBuffer(void);
 
+	/**
+	 * Command: AT
+	 * @return  true: if nothing is wrong, false: otherwise
+	 */
 	bool AT(void);
+
+	/**
+	 * Send AT Command
+	 * @param  at Command
+	 * @return    true: if nothing is wrong, false: otherwise
+	 */
 	bool ATCommand(const char at[]);
+
+	/**
+	 * Send AT Command
+	 * @param  at Command (Flash Memory)
+	 * @return    true: if nothing is wrong, false: otherwise
+	 */
 	bool ATCommand(const __FlashStringHelper *at);
 
+	/**
+	 * Get AT Response, this function is block call until timeout.
+	 * If response is received then, get it until "\\r\\n" chars
+	 * @param  timeout Timeout in millis, default: 500
+	 * @return    		 true: Response received, false: Timeout is reached
+	 */
 	bool ATResponse(unsigned long timeout = 500);
+
+	/**
+	 * Get AT Response, and check if response is equal with expected
+	 * @param  expected     Expected response
+	 * @param  timeout      Timeout in millis, dafault: 500
+	 * @return              true: If response as expected, false: Otherwise or timeout
+	 * @see		 ATResponse()
+	 */
 	bool ATResponseEqual(const char expected[], unsigned long timeout = 500);
+
+	/**
+	 * Get AT Response, and check if response is equal with expected
+	 * @param  expected     Expected response (Flash Memory)
+	 * @param  timeout      Timeout in millis, dafault: 500
+	 * @return              true: If response as expected, false: Otherwise or timeout
+	 * @see		 ATResponse()
+	 */
 	bool ATResponseEqual(const __FlashStringHelper *expected, unsigned long timeout = 500);
+
+	/**
+	 * Get AT Response, and check if response is contain with expected
+	 * @param  expected     Expected response
+	 * @param  timeout      Timeout in millis, default: 500
+	 * @return              true: If response contain expected, false: Otherwise or timeout
+	 * @see		 ATResponse()
+	 */
 	bool ATResponseContain(const char expected[], unsigned long timeout = 500);
+
+	/**
+	 * Get AT Response, and check if response is contain with expected
+	 * @param  expected     Expected response (Flash Memory)
+	 * @param  timeout      Timeout in millis, default: 500
+	 * @return              true: If response contain expected, false: Otherwise or timeout
+	 * @see		 ATResponse()
+	 */
 	bool ATResponseContain(const __FlashStringHelper *expected, unsigned long timeout = 500);
+
+	/**
+	 * Get AT Response, and check if response is "OK"
+	 * @param  expected     Expected response
+	 * @param  timeout      Timeout in millis, default: 500
+	 * @return              true: If response "OK", false: Otherwise or timeout
+	 * @see		 ATResponse()
+	 */
 	bool ATResponseOk(unsigned long timeout = 500);
 
+	/**
+	 * Check that last response is equal as expected
+	 * @param  expected Expected response
+	 * @return          true: If last response as expected, false: Otherwise or timeout
+	 */
 	bool isResponseEqual(const char expected[]);
+
+	/**
+	 * Check that last response is equal as expected
+	 * @param  expected Expected response (Flash Memory)
+	 * @return          true: If last response as expected, false: Otherwise or timeout
+	 */
 	bool isResponseEqual(const __FlashStringHelper *expected);
+
+	/**
+	 * Check that last response is contain expected
+	 * @param  expected Expected response
+	 * @return          true: If last response contain expected, false: Otherwise or timeout
+	 */
 	bool isResponseContain(const char expected[]);
+
+	/**
+	 * Check that last response is contain expected
+	 * @param  expected Expected response (Flash Memory)
+	 * @return          true: If last response contain expected, false: Otherwise or timeout
+	 */
 	bool isResponseContain(const __FlashStringHelper *expected);
+
+	/**
+	 * Check that last response is "OK"
+	 * @param  expected Expected response
+	 * @return          true: If last response is "OK", false: Otherwise or timeout
+	 */
 	bool isResponseOk(void);
 
 	void setEcho(bool echo) { this->echo = echo; }
 
+	/**
+	 * Get last response
+	 * @return  Response
+	 */
 	const char *getResponse(void) { return response; }
+
+	/**
+	 * Is Echo is enable
+	 * @return  true: If enable, false: Otherwise
+	 */
 	bool isEcho(void) { return echo; }
+
+	/**
+	 * Is SIM Module power is down
+	 * @return  true: If power is down, false: Otherwise
+	 */
 	bool isPowerDown(void) { return powerDown; };
 
+	/**
+	 * Reset Power SIM Module
+	 * @return  true
+	 */
 	bool powerReset(void);
 };
 
