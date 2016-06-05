@@ -11,9 +11,6 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   const __FlashStringHelper *urcHttpAction = F("+HTTPACTION:");
   const __FlashStringHelper *urcEnterPin = F("+CPIN: ");
 
-  Serial.print(F("URC: "));
-  Serial.println(urc);
-
   char *pointer;
   if((pointer = strstr_P(urc, (const char *)urcCallReady)) != NULL) {
     callReady.updated = true;
@@ -29,7 +26,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
 			if(i == 2) httpAction.dataLength = atoi(str);
 			str = strtok(NULL, ",");
 		}
-    httpAction.updated = true;
+    if(i >= 3) httpAction.updated = true;
     return true;
   }
   if((pointer = strstr_P(urc, (const char *)urcEnterPin)) != NULL) {
