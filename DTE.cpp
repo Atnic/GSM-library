@@ -75,7 +75,7 @@ void DTE::togglePower(void) {
 				break;
 			}
 			else {
-				urc.unsolicitedResultCode(response);
+				unsolicitedResultCode();
 			}
 		}
 	}
@@ -91,7 +91,7 @@ void DTE::clearReceivedBuffer(void) {
 	}
 	while (ATResponse(50)) {
 		if(isResponseEqual("RDY")) echo = true;
-		else urc.unsolicitedResultCode(response);
+		else unsolicitedResultCode();
 	}
 }
 
@@ -106,7 +106,7 @@ bool DTE::AT(void) {
 		}
 		if(isResponseEqual(F("AT\r"))) echo = true;
 		else if(isResponseEqual(F("OK"))) return true;
-		else urc.unsolicitedResultCode(response);
+		else unsolicitedResultCode();
 	}
 	return false;
 }
@@ -195,7 +195,7 @@ bool DTE::ATResponseEqual(const char expected[], unsigned long timeout) {
 		if(isResponseEqual(F("ERROR"))) return false;
 		if(isResponseEqual(expected)) break;
 		if(isResponseEqual(F("RDY"))) echo = true;
-		else urc.unsolicitedResultCode(response);
+		else unsolicitedResultCode();
 	}
 	return true;
 }
@@ -212,7 +212,7 @@ bool DTE::ATResponseContain(const char expected[], unsigned long timeout) {
 		if(isResponseContain(F("ERROR"))) return false;
 		if(isResponseContain(expected)) break;
 		if(isResponseEqual(F("RDY"))) echo = true;
-		else urc.unsolicitedResultCode(response);
+		else unsolicitedResultCode();
 	}
 	return true;
 }
@@ -253,6 +253,10 @@ bool DTE::isResponseContain(const __FlashStringHelper *expected) {
 
 bool DTE::isResponseOk(void) {
 	return isResponseContain(F("OK"));
+}
+
+bool DTE::unsolicitedResultCode(void) {
+  return urc.unsolicitedResultCode(response);
 }
 
 bool DTE::powerReset(void) {

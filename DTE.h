@@ -185,6 +185,13 @@ public:
 	 */
 	bool isResponseOk(void);
 
+	/**
+   * Unsolicited Result Code (URC) check, if it URC,
+   * then update URC Object member value
+   * @return     true: If it is URC, false: If it is not
+   */
+	bool unsolicitedResultCode(void);
+
 	void setEcho(bool echo) { this->echo = echo; }
 
 	/**
