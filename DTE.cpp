@@ -78,6 +78,12 @@ void DTE::togglePower(void) {
 				unsolicitedResultCode();
 			}
 		}
+		else if (AT()) {
+			echo = true;
+			powerDown = false;
+			urc.resetUnsolicitedResultCode();
+			break;
+		}
 	}
 }
 
