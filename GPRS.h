@@ -11,13 +11,13 @@ private:
   bool attached = false;
 
   /**
-   * Command AT+CGREG?
+   * Command AT+CGATT?
    * @return  true: If command success, false: Otherwise or timeout
    */
   bool atAttachGPRSService(void);
 
   /**
-   * Command AT+CGREG=
+   * Command AT+CGATT=
    * @param attach true: Force attach, false: dettach GPRS Service
    * @return       true: If command success, false: Otherwise or timeout
    */

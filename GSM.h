@@ -1,6 +1,3 @@
-/*
-*
-*/
 #ifndef GSM_h
 #define GSM_h
 
@@ -71,55 +68,291 @@ private:
   struct SubscriberNumber subscriberNumber;
   struct BatteryStatus batteryStatus;
 
+  /**
+   * Command A/
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atReIssueLastCommand(void);
+
+  /**
+   * Command ATE
+   * @param  echo true: To echo command, false: Otherwise
+   * @return      true: If command successful, false: Otherwise
+   */
   bool atSetCommandEchoMode(bool echo);
+
+  /**
+   * Command AT+IPR?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atSetFixedLocalRate(void);
+
+  /**
+   * Command AT+IPR=
+   * @param  baudrate Baudrate
+   * @return          true: If command successful, false: Otherwise
+   */
   bool atSetFixedLocalRate(long baudrate);
 
+  /**
+   * Command AT+COPS?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atOperatorSelection(void);
+
+  /**
+   * Command AT+COPS=
+   * @param  mode   Selection mode.
+   *                0: Automatic mode
+   *                1: Manual mode, oper should be present
+   *                3: Setting format
+   *                4: Manual and Automatic, oper should be present, if fail, then
+   *                	 automatic.
+   * @param  format Operator format
+   *                0: Long format alphanumeric
+   *                1: Short format alphanumeric
+   *                2: Numeric format
+   * @param  oper   Operator
+   * @return        true: If command successful, false: Otherwise
+   */
   bool atOperatorSelection(unsigned char mode, unsigned char format = 0, const char oper[] = "");
+
+  /**
+   * Command AT+COPS=
+   * @param  mode   Selection mode.
+   *                0: Automatic mode
+   *                1: Manual mode, oper should be present
+   *                3: Setting format
+   *                4: Manual and Automatic, oper should be present, if fail, then
+   *                	 automatic.
+   * @param  format Operator format
+   *                0: Long format alphanumeric
+   *                1: Short format alphanumeric
+   *                2: Numeric format
+   * @param  oper   Operator
+   * @return        true: If command successful, false: Otherwise
+   */
   bool atOperatorSelection(unsigned char mode, unsigned char format, const __FlashStringHelper *oper);
 
+  /**
+   * Command AT+CPBS?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atSelectPhonebookMemoryStorage(void);
+
+  /**
+   * Command AT+CPBS=
+   * @param  storage Storage Name
+   * @return         true: If command successful, false: Otherwise
+   */
   bool atSelectPhonebookMemoryStorage(const char storage[]);
 
+  /**
+   * Command AT+CPBW=
+   * @param  index Location number
+   * @return       true: If command successful, false: Otherwise
+   */
   bool atWritePhonebookEntry(unsigned char index);
+
+  /**
+   * Command AT+CPBW=
+   * @param  index       Location Number
+   * @param  phoneNumber Phone Number
+   * @return             true: If command successful, false: Otherwise
+   */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[]);
+
+  /**
+   * Command AT+CPBW=
+   * @param  index       Location Number
+   * @param  phoneNumber Phone Number
+   * @param  type        Type of Number:
+   *                     129: National Number type
+   *                     161: National Number type
+   *                     145: International Number type
+   *                     177: Network Specific Number
+   * @return             true: If command successful, false: Otherwise
+   */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type);
+
+  /**
+   * Command AT+CPBW=
+   * @param  index       Location Number
+   * @param  phoneNumber Phone Number
+   * @param  type        Type of Number:
+   *                     129: National Number type
+   *                     161: National Number type
+   *                     145: International Number type
+   *                     177: Network Specific Number
+   * @param  text        Text associated with number
+   * @return             true: If command successful, false: Otherwise
+   */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type, const char text[]);
 
+  /**
+   * Command AT+CPIN?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atEnterPIN(void);
+
+  /**
+   * Command AT+CPIN=
+   * @param  pin SIM Pin
+   * @return     true: If command successful, false: Otherwise
+   */
   bool atEnterPIN(const char pin[]);
+
+  /**
+   * Command AT+CPIN=
+   * @param  pin    SIM Pin
+   * @param  newPin New SIM Pin
+   * @return        true: If command successful, false: Otherwise
+   */
   bool atEnterPIN(const char pin[], const char *newPin);
 
+  /**
+   * Command AT+CREG?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atNetworkRegistration(void);
+
+  /**
+   * Command AT+CREG=
+   * @param  n URC Control
+   *           0: Disable URC
+   *           1: Enable URC
+   *           2: Enable URC, with location information
+   * @return   true: If command successful, false: Otherwise
+   */
   bool atNetworkRegistration(unsigned char n);
 
+  /**
+   * Command AT+CSQ
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atSignalQualityReport(void);
 
+  /**
+   * Command AT+CNUM
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atSubscriberNumber(void);
 
+  /**
+   * Command AT+CCLK?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atClock(void);
+
+  /**
+   * Command AT+CCLK=
+   * @param  timestamp Timestamp in format
+   * @return           true: If command successful, false: Otherwise
+   */
   bool atClock(const char timestamp[]);
 
+  /**
+   * Command AT+CBC
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atBatteryCharge(void);
 
+  /**
+   * Command AT+CUSD?
+   * @return  true: If command successful, false: Otherwise
+   */
   bool atUnstructuredSupplementaryServiceData(void);
+
+  /**
+   * Command AT+CUSD=
+   * @param  n Control USSD, Code result presentation
+   *           0: Disable
+   *           1: Enable
+   *           2: Cancel Session
+   * @return   true: If command successful, false: Otherwise
+   */
   bool atUnstructuredSupplementaryServiceData(unsigned char n);
+
+  /**
+   * Command AT+CUSD=
+   * @param  n   Control USSD, Code result presentation
+   *             0: Disable
+   *             1: Enable
+   * @param  str USSD Code, ex: *123#
+   * @return     true: If command successful, false: Otherwise
+   */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const char str[]);
+
+  /**
+   * Command AT+CUSD=
+   * @param  n   Control USSD, Code result presentation
+   *             0: Disable
+   *             1: Enable
+   * @param  str USSD Code, ex: *123#
+   * @param  dcs Cell Broadcast Data Coding Scheme
+   * @return     true: If command successful, false: Otherwise
+   */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs);
 
 public:
   GSM(DTE &dte);
 
+  /**
+   * Get current baudrate
+   * @return  Baudrate
+   */
   long getBaudrate(void);
+
+  /**
+   * Get current Operator, this method also
+   * automatically fetch Operator in Numeric Format
+   * @param  format Format operator name, default: 0
+   *                0: Long name format
+   *                1: Short name format
+   * @return        Operator Struct
+   */
   struct Operator getOperator(unsigned char format = 0);
+
+  /**
+   * Get current Phonebook Memory Storage
+   * @return  PhonebookMemoryStorage Struct
+   */
   struct PhonebookMemoryStorage getPhonebookMemoryStrorage(void);
+
+  /**
+   * Get current Pin Status
+   * @return  Pin Status in char array
+   */
   const char *getPinStatus(void);
+
+  /**
+   * Get current Network Registration
+   * @return  NetworkRegistration Struct
+   */
   struct NetworkRegistration getNetworkRegistration(void);
+
+  /**
+   * Get current Signal Quality
+   * @return  SignalQuality Struct
+   */
   struct SignalQuality getSignalQuality(void);
+
+  /**
+   * Get current Timestatmp
+   * @return  Clock Struct
+   */
   struct Clock getClock(void);
+
+  /**
+   * Get Subscriber/Owner Number
+   * @return  SubscriberNumber Struct
+   */
   struct SubscriberNumber getSubscriberNumber(void);
+
+  /**
+   * Get current Battery Status
+   * @return  BatteryStatus Struct
+   */
   struct BatteryStatus getBatteryStatus(void);
 };
 
