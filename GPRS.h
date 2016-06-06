@@ -1,6 +1,3 @@
-/*
-*
-*/
 #ifndef GPRS_h
 #define GPRS_h
 
@@ -13,12 +10,26 @@ private:
   DTE *dte;
   bool attached = false;
 
+  /**
+   * Command AT+CGREG?
+   * @return  true: If command success, false: Otherwise or timeout
+   */
   bool atAttachGPRSService(void);
+
+  /**
+   * Command AT+CGREG=
+   * @param attach true: Force attach, false: dettach GPRS Service
+   * @return       true: If command success, false: Otherwise or timeout
+   */
   bool atAttachGPRSService(bool attach);
 
 public:
   GPRS(DTE &dte);
 
+  /**
+   * Is GPRS Service attached/available
+   * @return  true: If attached/available, false: Otherwise
+   */
   bool isAttached(void);
 };
 

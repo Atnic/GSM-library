@@ -35,6 +35,6 @@ GPRS::GPRS(DTE &dte)
 }
 
 bool GPRS::isAttached(void) {
-	atAttachGPRSService();
+	if(!atAttachGPRSService()) attached = false;
 	return attached;
 }
