@@ -19,12 +19,18 @@ DTE::DTE(HardwareSerial &hardwareSerial, int powerPin, bool debug) {
 	this->hardwareSerial = &hardwareSerial;
 	this->powerPin = powerPin;
 	this->debug = debug;
+
+	pinMode(this->powerPin, OUTPUT);
+	digitalWrite(this->powerPin, LOW);
 }
 
 DTE::DTE(SoftwareSerial &softwareSerial, int powerPin, bool debug) {
 	this->softwareSerial = &softwareSerial;
 	this->powerPin = powerPin;
 	this->debug = debug;
+
+	pinMode(this->powerPin, OUTPUT);
+	digitalWrite(this->powerPin, LOW);
 }
 
 int DTE::available(void) {
@@ -57,33 +63,37 @@ size_t DTE::readBytes(char buffer[], size_t length) {
 
 void DTE::togglePower(void) {
 	debugPrint(F("Toggle Power"), true);
-	while(true) {
-		digitalWrite(powerPin, HIGH);
-		delay(1200);
-		digitalWrite(powerPin, LOW);
-		powerDown = false;
-		if(ATResponse(5000)) {
-			if(isResponseEqual(F("RDY"))) {
-				echo = true;
-				powerDown = false;
-				urc.resetUnsolicitedResultCode();
-				break;
-			}
-			if(isResponseEqual(F("NORMAL POWER DOWN"))) {
-				powerDown = true;
-				delay(1000);
-				break;
-			}
-			else {
-				unsolicitedResultCode();
-			}
-		}
-		else if (AT()) {
+	
+	digitalWrite(powerPin, HIGH);
+	delay(1200);
+	digitalWrite(powerPin, LOW);
+	powerDown = false;
+	while(ATResponse(5000)) {
+		if(isResponseEqual(F("RDY"))) {
 			echo = true;
 			powerDown = false;
 			urc.resetUnsolicitedResultCode();
-			break;
+			return;
 		}
+		if(isResponseEqual(F("NORMAL POWER DOWN"))) {
+			powerDown = true;
+			delay(1000);
+			return;
+		}
+		else {
+			unsolicitedResultCode();
+		}
+	}
+	if (AT()) {
+		echo = true;
+		powerDown = false;
+		urc.resetUnsolicitedResultCode();
+		return;
+	}
+	else {
+		powerDown = true;
+		delay(1000);
+		return;
 	}
 }
 
@@ -262,6 +272,8 @@ bool DTE::isResponseOk(void) {
 }
 
 bool DTE::unsolicitedResultCode(void) {
+	debugPrint(F("URC: "));
+	debugPrint(response, true);
   return urc.unsolicitedResultCode(response);
 }
 
