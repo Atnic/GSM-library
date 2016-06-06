@@ -1,5 +1,5 @@
 #######################################
-# Syntax Coloring Map for EZO
+# Syntax Coloring Map for GSM Library
 #######################################
 
 #######################################
@@ -7,11 +7,65 @@
 #######################################
 
 DTE	KEYWORD1
-GSM	KEYWORD1
+GPRS KEYWORD1
+GSM KEYWORD1
+HTTP  KEYWORD1
+IP  KEYWORD1
+URC KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+
+available KEYWORD2
+isListening KEYWORD2
+listen  KEYWORD2
+write KEYWORD2
+readBytes KEYWORD2
+togglePower KEYWORD2
+clearReceivedBuffer KEYWORD2
+AT  KEYWORD2
+ATCommand KEYWORD2
+ATResponse  KEYWORD2
+ATResponseEqual KEYWORD2
+ATResponseContain KEYWORD2
+ATResponseOk  KEYWORD2
+isResponseEqual KEYWORD2
+isResponseContain KEYWORD2
+isResponseOk  KEYWORD2
+unsolicitedResultCode KEYWORD2
+getResponse KEYWORD2
+isEcho  KEYWORD2
+isPowerDown KEYWORD2
+powerReset  KEYWORD2
+
+isAttached  KEYWORD2
+
+getBaudrate KEYWORD2
+getOperator KEYWORD2
+getPhonebookMemoryStrorage  KEYWORD2
+getPinStatus  KEYWORD2
+getNetworkRegistration  KEYWORD2
+getSignalQuality  KEYWORD2
+getClock  KEYWORD2
+getSubscriberNumber KEYWORD2
+getBatteryStatus  KEYWORD2
+
+getStatus KEYWORD2
+initialize  KEYWORD2
+setUserAgent  KEYWORD2
+action  KEYWORD2
+readDataReceived  KEYWORD2
+terminate KEYWORD2
+
+setConnectionParamGprs  KEYWORD2
+getConnectionStatus KEYWORD2
+getConnectionParam  KEYWORD2
+openConnection  KEYWORD2
+closeConnection KEYWORD2
+
+unsolicitedResultCode KEYWORD2
+resetUnsolicitedResultCode  KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
