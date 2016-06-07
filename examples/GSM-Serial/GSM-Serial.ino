@@ -15,4 +15,3 @@ void loop(void) {
     Serial.write(SSerial.read());
   }
 }
-
