@@ -75,10 +75,10 @@ bool HTTP::atHttpMethodAction(unsigned char method) {
 	dte->clearReceivedBuffer();
   if(!dte->ATCommand(buffer)) return false;
 	if(!dte->ATResponseOk(1000)) return false;
-  urc.httpAction.updated = false;
-  urc.httpAction.method = method;
-  urc.httpAction.dataLength = 0;
-  urc.httpAction.statusCode = 0;
+  Urc.httpAction.updated = false;
+  Urc.httpAction.method = method;
+  Urc.httpAction.dataLength = 0;
+  Urc.httpAction.statusCode = 0;
 	return true;
 }
 
@@ -104,7 +104,7 @@ bool HTTP::atReadHttpServerResponse(char dataReceived[], unsigned long startAddr
       return true;
     }
   	if(!dte->isResponseContain(response)) {
-      urc.unsolicitedResultCode(dte->getResponse());
+      Urc.unsolicitedResultCode(dte->getResponse());
       return false;
     }
   }
@@ -191,8 +191,8 @@ bool HTTP::action(const char method[], const char url[], const char data[]) {
 bool HTTP::readDataReceived(char buffer[], unsigned long length, unsigned long startAddress) {
   if(!initialized) return false;
   if(!getStatus().status == 0) return false;
-  if(urc.httpAction.statusCode != 0) {
-    if(!urc.httpAction.updated || !(urc.httpAction.statusCode == 200)) return false;
+  if(Urc.httpAction.statusCode != 0) {
+    if(!Urc.httpAction.updated || !(Urc.httpAction.statusCode == 200)) return false;
   }
   if(!atReadHttpServerResponse(buffer, startAddress, length)) return false;
 	return true;

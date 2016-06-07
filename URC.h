@@ -48,6 +48,6 @@ public:
   void resetUnsolicitedResultCode(void);
 };
 
-extern URC urc;
+extern URC Urc;
 
 #endif

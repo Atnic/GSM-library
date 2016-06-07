@@ -12,6 +12,7 @@ GSM	KEYWORD1
 HTTP	KEYWORD1
 IP	KEYWORD1
 URC	KEYWORD1
+Urc	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

@@ -63,7 +63,7 @@ size_t DTE::readBytes(char buffer[], size_t length) {
 
 void DTE::togglePower(void) {
 	debugPrint(F("Toggle Power"), true);
-	
+
 	digitalWrite(powerPin, HIGH);
 	delay(1200);
 	digitalWrite(powerPin, LOW);
@@ -72,7 +72,7 @@ void DTE::togglePower(void) {
 		if(isResponseEqual(F("RDY"))) {
 			echo = true;
 			powerDown = false;
-			urc.resetUnsolicitedResultCode();
+			Urc.resetUnsolicitedResultCode();
 			return;
 		}
 		if(isResponseEqual(F("NORMAL POWER DOWN"))) {
@@ -87,7 +87,7 @@ void DTE::togglePower(void) {
 	if (AT()) {
 		echo = true;
 		powerDown = false;
-		urc.resetUnsolicitedResultCode();
+		Urc.resetUnsolicitedResultCode();
 		return;
 	}
 	else {
@@ -274,7 +274,7 @@ bool DTE::isResponseOk(void) {
 bool DTE::unsolicitedResultCode(void) {
 	debugPrint(F("URC: "));
 	debugPrint(response, true);
-  return urc.unsolicitedResultCode(response);
+  return Urc.unsolicitedResultCode(response);
 }
 
 bool DTE::powerReset(void) {

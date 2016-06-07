@@ -1,6 +1,6 @@
 #include "URC.h"
 
-URC urc;
+URC Urc;
 
 URC::URC() {
 
