@@ -4,6 +4,13 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+struct FlowControl {
+	unsigned char dce = 0;
+	bool dceOn = true;
+	unsigned char dte = 0;
+	bool dteOn = true;
+};
+
 // Library Interface Description
 class DTE
 {
@@ -12,10 +19,55 @@ private:
 	SoftwareSerial *softwareSerial = NULL;
 	int powerPin;
 	bool debug = false;
-	char response[102];
+	char response[103];
 	bool echo = true;
-	bool pdu = true;
+	struct FlowControl flowControl;
+	long baudrate = -1;
 	bool powerDown = true;
+
+  /**
+   * Command A/
+   * @return  true: If command successful, false: Otherwise
+   */
+  bool atReIssueLastCommand(void);
+
+  /**
+   * Command ATE
+   * @param  echo true: To echo command, false: Otherwise
+   * @return      true: If command successful, false: Otherwise
+   */
+  bool atSetCommandEchoMode(bool echo);
+
+	/**
+	 * Command AT+IFC?
+	 * @return  true: If command successful, false: Otherwise
+	 */
+	bool atSetLocalDataFlowControl(void);
+
+	/**
+	 * Command AT+IFC=
+	 * @param  dce Method used by TE receiving from TA
+	 *             0: No Flow Control
+	 *             1: Software Flow Control
+	 *             2: Hardware FLow Control
+	 * @param  dte Method used by TA receiving from TE,
+	 *             same as dceByDte
+	 * @return     true: If command successful, false: Otherwise
+	 */
+	bool atSetLocalDataFlowControl(unsigned char dce, unsigned char dte);
+
+  /**
+   * Command AT+IPR?
+   * @return  true: If command successful, false: Otherwise
+   */
+  bool atSetFixedLocalRate(void);
+
+  /**
+   * Command AT+IPR=
+   * @param  baudrate Baudrate
+   * @return          true: If command successful, false: Otherwise
+   */
+  bool atSetFixedLocalRate(long baudrate);
 
 protected:
 	/**
@@ -96,6 +148,16 @@ public:
 	 * @return    true: if nothing is wrong, false: otherwise
 	 */
 	bool ATCommand(const __FlashStringHelper *at);
+
+	/**
+	 * Get AT Response, this function is block call until timeout.
+	 * If response is received then, get it until "\\r\\n" chars
+	 * @param	 buffer	    Buffer to store string from SIM Module
+	 * @param	 bufferSize Specified buffer size
+	 * @param  timeout    Timeout in millis, default: 500
+	 * @return    		    true: Response received, false: Timeout is reached
+	 */
+	bool ATResponse(char buffer[], size_t bufferSize, unsigned long timeout = 500);
 
 	/**
 	 * Get AT Response, this function is block call until timeout.
@@ -192,8 +254,6 @@ public:
    */
 	bool unsolicitedResultCode(void);
 
-	void setEcho(bool echo) { this->echo = echo; }
-
 	/**
 	 * Get last response
 	 * @return  Response
@@ -205,6 +265,33 @@ public:
 	 * @return  true: If enable, false: Otherwise
 	 */
 	bool isEcho(void) { return echo; }
+
+	/**
+	 * Get Flow Control
+	 * @return  FlowControl Struct
+	 */
+	struct FlowControl getFlowControl(void);
+
+	/**
+	 * Set Flow Control
+	 * @param  dce DCE by DTE
+	 * @param  dte DTE by DCE
+	 * @return     true: If command successful, false: Otherwise
+	 */
+	bool setFlowControl(unsigned char dce, unsigned char dte);
+
+	/**
+	 * Set Flow Control Status on DCE
+	 * @param  on true: Send XON, false: Send XOFF
+	 * @return    true: If command successful, false: Otherwise
+	 */
+	bool setFlowControlStatusDce(bool on);
+
+	/**
+	 * Get current baudrate
+	 * @return  Baudrate
+	 */
+	long getBaudrate(void);
 
 	/**
 	 * Is SIM Module power is down

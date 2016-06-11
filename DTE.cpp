@@ -14,6 +14,92 @@ void DTE::debugPrint(const __FlashStringHelper *message, bool returnChar) {
 	debugPrint(buffer, returnChar);
 }
 
+bool DTE::atReIssueLastCommand(void) {
+  const __FlashStringHelper *command = F("A/\r");
+	char buffer[4]; // "A/\r"
+
+	clearReceivedBuffer();
+  if(!ATCommand(command)) return false;
+	if(!ATResponseOk()) return false;
+	return true;
+}
+
+bool DTE::atSetCommandEchoMode(bool echo) {
+  const __FlashStringHelper *command = F("ATE%d\r");
+	char buffer[6]; // "ATEX\r"
+
+	sprintf_P(buffer, (const char *)command, echo?1:0);
+
+	clearReceivedBuffer();
+  if(!ATCommand(buffer)) return false;
+	if(!ATResponseOk()) return false;
+  this->echo = echo;
+	return true;
+}
+
+bool DTE::atSetLocalDataFlowControl(void) {
+	const __FlashStringHelper *command = F("AT+IFC?\r");
+	const __FlashStringHelper *response = F("+IFC: ");
+  struct FlowControl flowControl;
+
+  flowControl = this->flowControl;
+	clearReceivedBuffer();
+  if(!ATCommand(command)) return false;
+	if(!ATResponseContain(response)) return false;
+	char *pointer = strstr_P(getResponse(), (const char *)response) + strlen_P((const char *)response);
+  char *str = strtok(pointer, ",");
+  for (size_t i = 0; i < 2 && str != NULL; i++) {
+    if (i == 0) flowControl.dce = str[0] - '0';
+    if (i == 1) flowControl.dce = str[0] - '0';
+    str = strtok(NULL, ",");
+  }
+  if(!ATResponseOk()) return false;
+	this->flowControl = flowControl;
+	return true;
+}
+
+bool DTE::atSetLocalDataFlowControl(unsigned char dce, unsigned char dte) {
+  const __FlashStringHelper *command = F("AT+IFC=%d,%d\r");
+	char buffer[12]; // "AT+IFC=X,X\r"
+
+	sprintf_P(buffer, (const char *)command, dce, dte);
+
+	clearReceivedBuffer();
+  if(!ATCommand(buffer)) return false;
+	if(!ATResponseOk()) return false;
+  flowControl.dce = dce;
+  flowControl.dte = dte;
+	return true;
+}
+
+bool DTE::atSetFixedLocalRate(void) {
+	const __FlashStringHelper *command = F("AT+IPR?\r");
+	const __FlashStringHelper *response = F("+IPR: ");
+  long baudrate = 0;
+
+	clearReceivedBuffer();
+  if(!ATCommand(command)) return false;
+	if(!ATResponseContain(response)) return false;
+	char *str = strstr_P(getResponse(), (const char *)response) + strlen_P((const char *)response);
+  baudrate = atoi(str);
+  if(!ATResponseOk()) return false;
+	this->baudrate = baudrate;
+	return true;
+}
+
+bool DTE::atSetFixedLocalRate(long baudrate) {
+  const __FlashStringHelper *command = F("AT+IPR=%ld\r");
+	char buffer[15]; // "AT+IPR=XXXXXX\r"
+
+	sprintf_P(buffer, (const char *)command, baudrate);
+
+	clearReceivedBuffer();
+  if(!ATCommand(buffer)) return false;
+	if(!ATResponseOk()) return false;
+  this->baudrate = baudrate;
+	return true;
+}
+
 /* DTE Class */
 DTE::DTE(HardwareSerial &hardwareSerial, int powerPin, bool debug) {
 	this->hardwareSerial = &hardwareSerial;
@@ -68,12 +154,11 @@ void DTE::togglePower(void) {
 	delay(1200);
 	digitalWrite(powerPin, LOW);
 	powerDown = false;
-	while(ATResponse(5000)) {
+	while(ATResponse(3000)) {
 		if(isResponseEqual(F("RDY"))) {
-			echo = true;
 			powerDown = false;
 			Urc.resetUnsolicitedResultCode();
-			return;
+			if(AT()) return;
 		}
 		if(isResponseEqual(F("NORMAL POWER DOWN"))) {
 			powerDown = true;
@@ -85,7 +170,6 @@ void DTE::togglePower(void) {
 		}
 	}
 	if (AT()) {
-		echo = true;
 		powerDown = false;
 		Urc.resetUnsolicitedResultCode();
 		return;
@@ -99,45 +183,67 @@ void DTE::togglePower(void) {
 
 void DTE::clearReceivedBuffer(void) {
 	debugPrint(F("clearReceivedBuffer"), true);
+  setFlowControlStatusDce(true);
+  unsigned long t = millis();
 	if(hardwareSerial) {
-		if(hardwareSerial->available() == 0) return;
+    while(hardwareSerial->available() == 0 && millis() - t < 50);
+		if(hardwareSerial->available() == 0) {
+		  setFlowControlStatusDce(false);
+			return;
+		}
 	}
 	if(softwareSerial) {
-		if(softwareSerial->available() == 0) return;
+    while(softwareSerial->available() == 0 && millis() - t < 50);
+		if(softwareSerial->available() == 0) {
+		  setFlowControlStatusDce(false);
+			return;
+		}
 	}
 	while (ATResponse(50)) {
 		if(isResponseEqual("RDY")) echo = true;
 		else unsolicitedResultCode();
 	}
+  setFlowControlStatusDce(false);
 }
 
 bool DTE::AT(void) {
+  const __FlashStringHelper *command = F("AT\r");
+
 	powerDown = false;
 	echo = false;
-	ATCommand(F("AT\r"));
+	ATCommand(command);
 	while(true) {
 		if(!ATResponse()) {
 			powerDown = true;
 			break;
 		}
-		if(isResponseEqual(F("AT\r"))) echo = true;
-		else if(isResponseEqual(F("OK"))) return true;
+		if(isResponseEqual(command)) echo = true;
+		else if(isResponseOk()) return true;
 		else unsolicitedResultCode();
 	}
+  powerDown = true;
 	return false;
 }
 
 bool DTE::ATCommand(const char at[]) {
 	debugPrint("Command: ");
 	debugPrint(at, true);
-	if(hardwareSerial) {
-		hardwareSerial->print(at);
-	}
-	if(softwareSerial) {
-		softwareSerial->print(at);
-	}
-	if(echo)
-		if(!ATResponseEqual(at)) return false;
+
+  setFlowControlStatusDce(false);
+	if(hardwareSerial) hardwareSerial->print(at);
+	if(softwareSerial) softwareSerial->print(at);
+	if(echo) {
+    if(strlen(at) > (sizeof(response)-2)) {
+      char atEcho[strlen(at) + 3];
+      while (true) {
+        if (!ATResponse(atEcho, sizeof(atEcho))) return false;
+        if (strstr(atEcho, "ERROR") != NULL) return false;
+        if (strcmp(atEcho, at) == 0) break;
+        else Urc.unsolicitedResultCode(atEcho);
+      }
+    }
+    else if(!ATResponseEqual(at)) return false;
+  }
 	return true;
 }
 
@@ -147,23 +253,21 @@ bool DTE::ATCommand(const __FlashStringHelper *at) {
 	return ATCommand(buffer);
 }
 
-bool DTE::ATResponse(unsigned long timeout) {
+bool DTE::ATResponse(char buffer[], size_t bufferSize, unsigned long timeout) {
 	if(powerDown) {
 		debugPrint(F("Power Down"), true);
 		return false;
 	}
 
+  setFlowControlStatusDce(true);
+
 	unsigned long t = millis();
 	while(true) {
 		if(hardwareSerial) {
-			if (hardwareSerial->available() > 0) {
-				break;
-			}
+			if (hardwareSerial->available() > 0) break;
 		}
 		if(softwareSerial) {
-			if (softwareSerial->available() > 0) {
-				break;
-			}
+			if (softwareSerial->available() > 0) break;
 		}
 		if(millis() - t > timeout) {
 			debugPrint(F("No response"), true);
@@ -175,40 +279,48 @@ bool DTE::ATResponse(unsigned long timeout) {
 	unsigned int i = 0;
 	while(true) {
 		if(hardwareSerial) {
-			if (hardwareSerial->available() > 0) {
-				response[i++] = hardwareSerial->read();
+			while (hardwareSerial->available() > 0) {
+				buffer[i++] = hardwareSerial->read();
 				t = millis();
+        if(i >= 2) {
+    			if(buffer[i-2] == '\r' && buffer[i-1] == '\n') break;
+        }
 			}
 		}
 		if(softwareSerial) {
-			if (softwareSerial->available() > 0) {
-				response[i++] = softwareSerial->read();
+			while (softwareSerial->available() > 0) {
+				buffer[i++] = softwareSerial->read();
 				t = millis();
+        if(i >= 2) {
+    			if(buffer[i-2] == '\r' && buffer[i-1] == '\n') break;
+        }
 			}
 		}
 		if(i >= 2) {
-			if(response[i-2] == '\r' && response[i-1] == '\n') {
-				response[i-2] = '\0';
-				if(strlen(response) > 0) {
-					break;
-				}
+			if(buffer[i-2] == '\r' && buffer[i-1] == '\n') {
+				buffer[i-2] = '\0';
+				if(strlen(buffer) > 0) break;
 				else i = 0;
 			}
 		}
-		if(millis() - t > 50 || i >= (sizeof(response)-1)) {
-			response[i] = '\0';
+		if(millis() - t > 50 || i >= (bufferSize-1)) {
+			buffer[i] = '\0';
 			break;
 		}
 	}
 	debugPrint(F("Response: "));
-	debugPrint(response, true);
+	debugPrint(buffer, true);
 	return true;
+}
+
+bool DTE::ATResponse(unsigned long timeout) {
+  return ATResponse(response, sizeof(response), timeout);
 }
 
 bool DTE::ATResponseEqual(const char expected[], unsigned long timeout) {
 	while(true) {
 		if(!ATResponse(timeout)) return false;
-		if(isResponseEqual(F("ERROR"))) return false;
+		if(isResponseContain(F("ERROR"))) return false;
 		if(isResponseEqual(expected)) break;
 		if(isResponseEqual(F("RDY"))) echo = true;
 		else unsolicitedResultCode();
@@ -240,12 +352,13 @@ bool DTE::ATResponseContain(const __FlashStringHelper *expected, unsigned long t
 }
 
 bool DTE::ATResponseOk(unsigned long timeout) {
-	return ATResponseEqual(F("OK"), timeout);
+  if(!ATResponseEqual(F("OK"), timeout)) return false;
+  setFlowControlStatusDce(false);
+	return true;
 }
 
 bool DTE::isResponseEqual(const char expected[]) {
-	if(strcmp(response, expected) != 0)
-	return false;
+	if(strcmp(response, expected) != 0) return false;
 	return true;
 }
 
@@ -256,8 +369,7 @@ bool DTE::isResponseEqual(const __FlashStringHelper *expected) {
 }
 
 bool DTE::isResponseContain(const char expected[]) {
-	if(strstr(response, expected) == NULL)
-		return false;
+	if(strstr(response, expected) == NULL) return false;
 	return true;
 }
 
@@ -268,7 +380,9 @@ bool DTE::isResponseContain(const __FlashStringHelper *expected) {
 }
 
 bool DTE::isResponseOk(void) {
-	return isResponseContain(F("OK"));
+  if(!isResponseContain(F("OK"))) return false;
+  setFlowControlStatusDce(false);
+	return true;
 }
 
 bool DTE::unsolicitedResultCode(void) {
@@ -277,11 +391,40 @@ bool DTE::unsolicitedResultCode(void) {
   return Urc.unsolicitedResultCode(response);
 }
 
+struct FlowControl DTE::getFlowControl(void) {
+  struct FlowControl flowControl;
+
+  if(!atSetLocalDataFlowControl()) this->flowControl = flowControl;
+  return this->flowControl;
+}
+
+bool DTE::setFlowControl(unsigned char dce, unsigned char dte) {
+  if(!atSetLocalDataFlowControl(dce, dte)) return false;
+  if(flowControl.dce == 1) setFlowControlStatusDce(false);
+  return true;
+}
+
+bool DTE::setFlowControlStatusDce(bool on) {
+  if (flowControl.dce != 1) return false;
+  if (flowControl.dceOn == on) return true;
+  if (hardwareSerial) hardwareSerial->write(on?17:19);
+  if (softwareSerial) softwareSerial->write(on?17:19);
+  flowControl.dceOn = on;
+  return true;
+}
+
+long DTE::getBaudrate(void) {
+  if(!atSetLocalDataFlowControl()) return 0;
+  return baudrate;
+}
+
 bool DTE::powerReset(void) {
 	togglePower();
 	while (powerDown) {
 		togglePower();
 	}
 	powerDown = false;
+  if(getFlowControl().dce == 0)
+    setFlowControl(1, 0);
 	return true;
 }
