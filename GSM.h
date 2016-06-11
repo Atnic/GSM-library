@@ -58,7 +58,6 @@ class GSM
 {
 private:
   DTE *dte;
-  long baudrate = -1;
   struct Operator selectedOperator;
   struct PhonebookMemoryStorage phonebookMemoryStorage;
   char pinStatus[11];
@@ -67,32 +66,6 @@ private:
   struct Clock clock;
   struct SubscriberNumber subscriberNumber;
   struct BatteryStatus batteryStatus;
-
-  /**
-   * Command A/
-   * @return  true: If command successful, false: Otherwise
-   */
-  bool atReIssueLastCommand(void);
-
-  /**
-   * Command ATE
-   * @param  echo true: To echo command, false: Otherwise
-   * @return      true: If command successful, false: Otherwise
-   */
-  bool atSetCommandEchoMode(bool echo);
-
-  /**
-   * Command AT+IPR?
-   * @return  true: If command successful, false: Otherwise
-   */
-  bool atSetFixedLocalRate(void);
-
-  /**
-   * Command AT+IPR=
-   * @param  baudrate Baudrate
-   * @return          true: If command successful, false: Otherwise
-   */
-  bool atSetFixedLocalRate(long baudrate);
 
   /**
    * Command AT+COPS?
@@ -296,12 +269,6 @@ private:
 
 public:
   GSM(DTE &dte);
-
-  /**
-   * Get current baudrate
-   * @return  Baudrate
-   */
-  long getBaudrate(void);
 
   /**
    * Get current Operator, this method also

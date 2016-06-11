@@ -1,56 +1,6 @@
 #include "GSM.h"
 #include "URC.h"
 
-bool GSM::atReIssueLastCommand(void) {
-	const __FlashStringHelper *command = F("A/\r");
-
-	dte->clearReceivedBuffer();
-  if(!dte->ATCommand(command)) return false;
-	if(!dte->ATResponseOk()) return false;
-	return true;
-}
-
-bool GSM::atSetCommandEchoMode(bool echo) {
-	const __FlashStringHelper *command = F("ATE%d\r");
-	char buffer[8]; // "ATEX\r\r\n"
-
-	sprintf_P(buffer, (const char *)command, (echo)?1:0);
-
-	dte->clearReceivedBuffer();
-  if(!dte->ATCommand(buffer)) return false;
-	if(!dte->ATResponseOk()) return false;
-	dte->setEcho(echo);
-	return true;
-}
-
-bool GSM::atSetFixedLocalRate(void) {
-	const __FlashStringHelper *command = F("AT+IPR?\r");
-	const __FlashStringHelper *response = F("+IPR: ");
-	long baudrate;
-
-	dte->clearReceivedBuffer();
-  if(!dte->ATCommand(command)) return false;
-	if(!dte->ATResponseContain(response)) return false;
-	char *str = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
-	baudrate = atol(str);
-	if(!dte->ATResponseOk()) return false;
-	this->baudrate = baudrate;
-	return true;
-}
-
-bool GSM::atSetFixedLocalRate(long baudrate) {
-	const __FlashStringHelper *command = F("AT+IPR=%ld\r");
-	char buffer[17]; // "AT+IPR=XXXXXX\r\r\n"
-
-	sprintf_P(buffer, (const char *)command, baudrate);
-
-	dte->clearReceivedBuffer();
-  if(!dte->ATCommand(buffer)) return false;
-	if(!dte->ATResponseOk()) return false;
-	this->baudrate = baudrate;
-	return true;
-}
-
 bool GSM::atOperatorSelection(void) {
 	const __FlashStringHelper *command = F("AT+COPS?\r");
 	const __FlashStringHelper *response = F("+COPS: ");
@@ -296,12 +246,6 @@ bool GSM::atBatteryCharge(void) {
 /* GSM Class */
 GSM::GSM(DTE &dte) {
 	this->dte = &dte;
-}
-
-long GSM::getBaudrate(void) {
-	if(baudrate < 0)
-		atSetFixedLocalRate();
-	return baudrate;
 }
 
 struct Operator GSM::getOperator(unsigned char format) {
