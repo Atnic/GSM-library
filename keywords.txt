@@ -12,6 +12,7 @@ GSM	KEYWORD1
 HTTP	KEYWORD1
 IP	KEYWORD1
 URC	KEYWORD1
+SMS	KEYWORD1
 Urc	KEYWORD1
 
 #######################################
@@ -37,12 +38,15 @@ isResponseOk	KEYWORD2
 unsolicitedResultCode	KEYWORD2
 getResponse	KEYWORD2
 isEcho	KEYWORD2
+getFlowControl	KEYWORD2
+setFlowControl	KEYWORD2
+setFlowControlStatusDce	KEYWORD2
+getBaudrate	KEYWORD2
 isPowerDown	KEYWORD2
 powerReset	KEYWORD2
 
 isAttached	KEYWORD2
 
-getBaudrate	KEYWORD2
 getOperator	KEYWORD2
 getPhonebookMemoryStrorage	KEYWORD2
 getPinStatus	KEYWORD2
@@ -64,6 +68,16 @@ getConnectionStatus	KEYWORD2
 getConnectionParam	KEYWORD2
 openConnection	KEYWORD2
 closeConnection	KEYWORD2
+
+deleteSMS	KEYWORD2
+deleteSMSAllRead	KEYWORD2
+deleteSMSAllReadSent	KEYWORD2
+deleteSMSAllReadSentUnsent	KEYWORD2
+deleteSMSAll	KEYWORD2
+isTextMode	KEYWORD2
+readSMS	KEYWORD2
+sendSMS	KEYWORD2
+isShowParameter	KEYWORD2
 
 unsolicitedResultCode	KEYWORD2
 resetUnsolicitedResultCode	KEYWORD2
