@@ -154,6 +154,7 @@ void DTE::togglePower(void) {
 	delay(1200);
 	digitalWrite(powerPin, LOW);
 	powerDown = false;
+	flowControl = FlowControl();
 	while(ATResponse(3000)) {
 		if(isResponseEqual(F("RDY"))) {
 			powerDown = false;
