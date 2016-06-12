@@ -25,8 +25,8 @@ bool DTE::atReIssueLastCommand(void) {
 }
 
 bool DTE::atSetCommandEchoMode(bool echo) {
-  const __FlashStringHelper *command = F("ATE%d\r");
-	char buffer[6]; // "ATEX\r"
+  const __FlashStringHelper *command = F("ATE%d&W\r");
+	char buffer[8]; // "ATEX&W\r"
 
 	sprintf_P(buffer, (const char *)command, echo?1:0);
 
@@ -50,7 +50,7 @@ bool DTE::atSetLocalDataFlowControl(void) {
   char *str = strtok(pointer, ",");
   for (size_t i = 0; i < 2 && str != NULL; i++) {
     if (i == 0) flowControl.dce = str[0] - '0';
-    if (i == 1) flowControl.dce = str[0] - '0';
+    if (i == 1) flowControl.dte = str[0] - '0';
     str = strtok(NULL, ",");
   }
   if(!ATResponseOk()) return false;
@@ -59,8 +59,8 @@ bool DTE::atSetLocalDataFlowControl(void) {
 }
 
 bool DTE::atSetLocalDataFlowControl(unsigned char dce, unsigned char dte) {
-  const __FlashStringHelper *command = F("AT+IFC=%d,%d\r");
-	char buffer[12]; // "AT+IFC=X,X\r"
+  const __FlashStringHelper *command = F("AT+IFC=%d,%d;&W\r");
+	char buffer[15]; // "AT+IFC=X,X;&W\r"
 
 	sprintf_P(buffer, (const char *)command, dce, dte);
 
@@ -391,10 +391,14 @@ bool DTE::unsolicitedResultCode(void) {
   return Urc.unsolicitedResultCode(response);
 }
 
-struct FlowControl DTE::getFlowControl(void) {
-  struct FlowControl flowControl;
+bool DTE::setEcho(bool echo) {
+	if (this->echo == echo) return true;
+	if (!atSetCommandEchoMode(echo)) return false;
+	return true;
+}
 
-  if(!atSetLocalDataFlowControl()) this->flowControl = flowControl;
+struct FlowControl DTE::getFlowControl(void) {
+  if(!atSetLocalDataFlowControl()) return FlowControl{};
   return this->flowControl;
 }
 
@@ -424,7 +428,10 @@ bool DTE::powerReset(void) {
 		togglePower();
 	}
 	powerDown = false;
-  if(getFlowControl().dce == 0)
-    setFlowControl(1, 0);
+	if(isEcho())
+		setEcho(false);
+	if(getFlowControl().dce == 0)
+  	setFlowControl(1, 0);
+	setFlowControlStatusDce(false);
 	return true;
 }

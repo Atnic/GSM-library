@@ -267,6 +267,13 @@ public:
 	bool isEcho(void) { return echo; }
 
 	/**
+	 * Set Echo
+	 * @param  echo true: Enable, false: Disable
+	 * @return      true: If success, false: Otherwise
+	 */
+	bool setEcho(bool echo);
+
+	/**
 	 * Get Flow Control
 	 * @return  FlowControl Struct
 	 */
