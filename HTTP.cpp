@@ -72,13 +72,13 @@ bool HTTP::atHttpMethodAction(unsigned char method) {
 
 	sprintf_P(buffer, (const char *)command, method);
 
-	dte->clearReceivedBuffer();
-  if(!dte->ATCommand(buffer)) return false;
-	if(!dte->ATResponseOk(1000)) return false;
   Urc.httpAction.updated = false;
   Urc.httpAction.method = method;
   Urc.httpAction.dataLength = 0;
   Urc.httpAction.statusCode = 0;
+  dte->clearReceivedBuffer();
+  if(!dte->ATCommand(buffer)) return false;
+  if(!dte->ATResponseOk(1000)) return false;
 	return true;
 }
 
