@@ -9,10 +9,11 @@
 DTE	KEYWORD1
 GPRS	KEYWORD1
 GSM	KEYWORD1
+GSMLOC	KEYWORD1
 HTTP	KEYWORD1
 IP	KEYWORD1
-URC	KEYWORD1
 SMS	KEYWORD1
+URC	KEYWORD1
 Urc	KEYWORD1
 
 #######################################
@@ -38,6 +39,7 @@ isResponseOk	KEYWORD2
 unsolicitedResultCode	KEYWORD2
 getResponse	KEYWORD2
 isEcho	KEYWORD2
+setEcho	KEYWORD2
 getFlowControl	KEYWORD2
 setFlowControl	KEYWORD2
 setFlowControlStatusDce	KEYWORD2
@@ -55,6 +57,8 @@ getSignalQuality	KEYWORD2
 getClock	KEYWORD2
 getSubscriberNumber	KEYWORD2
 getBatteryStatus	KEYWORD2
+
+getLocationTime	KEYWORD2
 
 getStatus	KEYWORD2
 initialize	KEYWORD2
