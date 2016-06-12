@@ -163,6 +163,7 @@ bool HTTP::initialize(unsigned int timeout, unsigned char cid) {
       if(timeout < 30) timeout = 30;
       if(!atSetHttpParametersValue(F("TIMEOUT"), itoa(timeout, buffer, 10))) return false;
       if(!atSetHttpParametersValue(F("CONTENT"), "application/x-www-form-urlencoded")) return false;
+      if(!atSetHttpParametersValue(F("REDIR"), "1")) return false;
     }
   }
   else {
