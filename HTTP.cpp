@@ -186,6 +186,12 @@ bool HTTP::action(const char method[], const char url[], const char data[]) {
     if(!atInputHttpData(data)) return false;
 	}
   if(!atHttpMethodAction(methodIndex(method))) return false;
+  if(Urc.httpAction.updated && Urc.httpAction.statusCode == 603) {
+    if((methodIndex(method) == 1) && strlen(data) > 0) {
+      if(!atInputHttpData(data)) return false;
+    }
+    if(!atHttpMethodAction(methodIndex(method))) return false;
+  }
 	return true;
 }
 
