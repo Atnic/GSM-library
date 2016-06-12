@@ -92,6 +92,10 @@ void IP::setConnectionParamGprs(const char apn[], const char user[], const char 
 	struct ConnParam connParam = this->bearerProfile[cid-1].connParam;
 	bool change = false;
 
+	if (strcmp(connParam.contype, "GPRS") != 0) {
+		atBearerSettings(3, cid, "CONTYPE", "GPRS");
+		change = true;
+	}
 	if (strcmp(connParam.apn, apn) != 0) {
 		atBearerSettings(3, cid, "APN", apn);
 		change = true;
@@ -104,7 +108,10 @@ void IP::setConnectionParamGprs(const char apn[], const char user[], const char 
 		atBearerSettings(3, cid, "PWD", pwd);
 		change = true;
 	}
-	if (change) getConnectionParam(cid);
+	if (change) {
+		atBearerSettings(5, 1);
+		getConnectionParam(cid);
+	}
 }
 
 struct ConnStatus IP::getConnectionStatus(unsigned char cid) {
