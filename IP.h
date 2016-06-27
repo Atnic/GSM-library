@@ -6,21 +6,21 @@
 #include <GPRS.h>
 
 struct ConnStatus {
-  unsigned char status = 3;
-  char ip[16] = "";
+  unsigned char status;
+  char ip[16];
 };
 
 struct ConnParam {
-  char contype[5] = "";
-  char apn[15] = "";
-  char phonenum[5] = "";
-  char user[15] = "";
-  char pwd[15] = "";
-  unsigned char rate = 2;
+  char contype[5];
+  char apn[15];
+  char phonenum[5];
+  char user[15];
+  char pwd[15];
+  unsigned char rate;
 };
 
 struct BearerProfile {
-  unsigned char cid = 1;
+  unsigned char cid;
   struct ConnStatus connStatus;
   struct ConnParam connParam;
 };

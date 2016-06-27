@@ -246,6 +246,13 @@ bool GSM::atBatteryCharge(void) {
 /* GSM Class */
 GSM::GSM(DTE &dte) {
 	this->dte = &dte;
+	selectedOperator = (struct Operator) { 0, 0, "", "" };
+	phonebookMemoryStorage = (struct PhonebookMemoryStorage) { "", 0, 0 };
+	networkRegistration = (struct NetworkRegistration) { 0, 4, "", "" };
+	signalQuality = (struct SignalQuality) { 0, 0 };
+	clock = (struct Clock) { "", 0, 0, 0, 0, 0, 0, 0 };
+	subscriberNumber = (struct SubscriberNumber) { "", "", 0, 0, 0 };
+	batteryStatus = (struct BatteryStatus) { false, 0, 0.0f };
 }
 
 struct Operator GSM::getOperator(unsigned char format) {
