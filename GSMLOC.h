@@ -6,11 +6,11 @@
 #include <IP.h>
 
 struct LocationTime {
-  unsigned int locationCode = 0;
-  char longitude[12] = "";
-  char latitude[12] = "";
-  char date[11] = "";
-  char time[9] = "";
+  unsigned int locationCode;
+  char longitude[12];
+  char latitude[12];
+  char date[11];
+  char time[9];
 };
 
 class GSMLOC

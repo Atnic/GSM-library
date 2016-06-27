@@ -5,32 +5,32 @@
 #include <DTE.h>
 
 struct Operator {
-  unsigned char mode = 0;
-  unsigned char format = 0;
-  char oper[16] = "";
-  char operNumeric[6] = "";
+  unsigned char mode;
+  unsigned char format;
+  char oper[16];
+  char operNumeric[6];
 };
 
 struct PhonebookMemoryStorage {
-  char storage[3] = "";
+  char storage[3];
   unsigned char used;
   unsigned char total;
 };
 
 struct NetworkRegistration {
-  unsigned char n = 0;
-  unsigned char status = 4;
-  char lac[5] = "";
-  char ci[5] = "";
+  unsigned char n;
+  unsigned char status;
+  char lac[5];
+  char ci[5];
 };
 
 struct SignalQuality {
-  unsigned char rssi = 0;
-  unsigned char ber = 0;
+  unsigned char rssi;
+  unsigned char ber;
 };
 
 struct Clock {
-  char timestamp[21] = "";
+  char timestamp[21];
   unsigned int year;
   unsigned char month;
   unsigned char day;
@@ -41,17 +41,17 @@ struct Clock {
 };
 
 struct SubscriberNumber {
-  char characterSet[9] = "";
-  char number[17] = "";
+  char characterSet[9];
+  char number[17];
   unsigned char type;
   unsigned char speed;
   unsigned char service;
 };
 
 struct BatteryStatus {
-  bool charge = false;
-  unsigned char capacityLevel = 0;
-  float voltage = 0.0f;
+  bool charge;
+  unsigned char capacityLevel;
+  float voltage;
 };
 
 class GSM

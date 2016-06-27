@@ -35,14 +35,15 @@ GSMLOC::GSMLOC(DTE &dte, IP &ip)
 {
 	this->dte = &dte;
   this->ip = &ip;
+  locationTime = (struct LocationTime) { 0, "", "", "", "" };
 }
 
 struct LocationTime GSMLOC::getLocationTime(unsigned char cid) {
   if (strlen(locationTime.longitude) > 0) return locationTime;
   if (ip->getConnectionStatus(cid).status == 1) {
-    if(!atGSMLocationAndTime(1, cid)) return LocationTime();
+    if(!atGSMLocationAndTime(1, cid)) return (struct LocationTime) { 0, "", "", "", "" };
     if(locationTime.locationCode == 603) {
-      if(!atGSMLocationAndTime(1, cid)) return LocationTime();
+      if(!atGSMLocationAndTime(1, cid)) return (struct LocationTime) { 0, "", "", "", "" };
     }
   }
   return locationTime;

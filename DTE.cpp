@@ -16,7 +16,6 @@ void DTE::debugPrint(const __FlashStringHelper *message, bool returnChar) {
 
 bool DTE::atReIssueLastCommand(void) {
   const __FlashStringHelper *command = F("A/\r");
-	char buffer[4]; // "A/\r"
 
 	clearReceivedBuffer();
   if(!ATCommand(command)) return false;
@@ -103,17 +102,29 @@ bool DTE::atSetFixedLocalRate(long baudrate) {
 /* DTE Class */
 DTE::DTE(HardwareSerial &hardwareSerial, int powerPin, bool debug) {
 	this->hardwareSerial = &hardwareSerial;
+	this->softwareSerial = NULL;
 	this->powerPin = powerPin;
 	this->debug = debug;
+	this->response[0] = '\0';
+	this->echo = true;
+	this->flowControl = (struct FlowControl) { 0, true, 0, true };
+	this->baudrate = -1;
+	this->powerDown = true;
 
 	pinMode(this->powerPin, OUTPUT);
 	digitalWrite(this->powerPin, LOW);
 }
 
 DTE::DTE(SoftwareSerial &softwareSerial, int powerPin, bool debug) {
+	this->hardwareSerial = NULL;
 	this->softwareSerial = &softwareSerial;
 	this->powerPin = powerPin;
 	this->debug = debug;
+	this->response[0] = '\0';
+	this->echo = true;
+	this->flowControl = (struct FlowControl) { 0, true, 0, true };
+	this->baudrate = -1;
+	this->powerDown = true;
 
 	pinMode(this->powerPin, OUTPUT);
 	digitalWrite(this->powerPin, LOW);
@@ -154,7 +165,7 @@ void DTE::togglePower(void) {
 	delay(1200);
 	digitalWrite(powerPin, LOW);
 	powerDown = false;
-	flowControl = FlowControl();
+	flowControl = (struct FlowControl) { 0, true, 0, true };
 	while(ATResponse(3000)) {
 		if(isResponseEqual(F("RDY"))) {
 			powerDown = false;
@@ -401,7 +412,7 @@ bool DTE::setEcho(bool echo) {
 }
 
 struct FlowControl DTE::getFlowControl(void) {
-  if(!atSetLocalDataFlowControl()) return FlowControl{};
+  if(!atSetLocalDataFlowControl()) return  (struct FlowControl) { 0, true, 0, true };
   return this->flowControl;
 }
 

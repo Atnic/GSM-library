@@ -5,25 +5,25 @@
 #include <SoftwareSerial.h>
 
 struct FlowControl {
-	unsigned char dce = 0;
-	bool dceOn = true;
-	unsigned char dte = 0;
-	bool dteOn = true;
+	unsigned char dce;
+	bool dceOn;
+	unsigned char dte;
+	bool dteOn;
 };
 
 // Library Interface Description
 class DTE
 {
 private:
-	HardwareSerial *hardwareSerial = NULL;
-	SoftwareSerial *softwareSerial = NULL;
+	HardwareSerial *hardwareSerial;
+	SoftwareSerial *softwareSerial;
 	int powerPin;
-	bool debug = false;
+	bool debug;
 	char response[103];
-	bool echo = true;
+	bool echo;
 	struct FlowControl flowControl;
-	long baudrate = -1;
-	bool powerDown = true;
+	long baudrate;
+	bool powerDown;
 
   /**
    * Command A/

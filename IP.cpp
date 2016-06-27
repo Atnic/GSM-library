@@ -86,6 +86,9 @@ IP::IP(DTE &dte, GPRS &gprs)
 {
 	this->dte = &dte;
 	this->gprs = &gprs;
+	bearerProfile[0] = (struct BearerProfile) { 1, (struct ConnStatus) { 3, "" }, (struct ConnParam) { "", "", "", "", "", 2 } };
+	bearerProfile[1] = (struct BearerProfile) { 2, (struct ConnStatus) { 3, "" }, (struct ConnParam) { "", "", "", "", "", 2 } };
+	bearerProfile[2] = (struct BearerProfile) { 3, (struct ConnStatus) { 3, "" }, (struct ConnParam) { "", "", "", "", "", 2 } };
 }
 
 void IP::setConnectionParamGprs(const char apn[], const char user[], const char pwd[], unsigned char cid) {
