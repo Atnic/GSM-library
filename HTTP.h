@@ -6,10 +6,10 @@
 #include <IP.h>
 
 struct HttpStatus {
-  char mode[5] = "GET";
-  unsigned char status = 0;
-  unsigned long finish = 0;
-  unsigned long remain = 0;
+  char mode[5];
+  unsigned char status;
+  unsigned long finish;
+  unsigned long remain;
 };
 
 class HTTP
@@ -17,9 +17,9 @@ class HTTP
 private:
   DTE *dte;
   IP *ip;
-  bool initialized = false;
+  bool initialized;
   struct HttpStatus httpStatus;
-  unsigned long serverResponseDataLength = 0;
+  unsigned long serverResponseDataLength;
 
   /**
    * Convert HTTP Method to index

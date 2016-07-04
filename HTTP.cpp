@@ -148,6 +148,9 @@ HTTP::HTTP(DTE &dte, IP &ip)
 {
 	this->dte = &dte;
   this->ip = &ip;
+  this->initialized = false;
+  this->httpStatus = (struct HttpStatus) { "GET", 0, 0 };
+  this->serverResponseDataLength = 0;
 }
 
 struct HttpStatus HTTP::getStatus(void) {
@@ -157,6 +160,7 @@ struct HttpStatus HTTP::getStatus(void) {
 
 bool HTTP::initialize(unsigned int timeout, unsigned char cid) {
   if (ip->getConnectionStatus(cid).status == 1) {
+    if(initialized) atTerminateHttpService();
     if(!initialized) {
       if(!atInitializeHttpService()) return false;
       char buffer[5];
