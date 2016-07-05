@@ -2,7 +2,7 @@
 #define SMS_h
 
 #include <Arduino.h>
-#include <DTE.h>
+#include "DTE.h"
 
 struct Message {
   unsigned char index = 0;

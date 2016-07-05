@@ -2,8 +2,8 @@
 #define HTTP_h
 
 #include <Arduino.h>
-#include <DTE.h>
-#include <IP.h>
+#include "DTE.h"
+#include "IP.h"
 
 struct HttpStatus {
   char mode[5];

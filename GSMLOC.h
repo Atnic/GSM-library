@@ -2,8 +2,8 @@
 #define GSMLOC_h
 
 #include <Arduino.h>
-#include <DTE.h>
-#include <IP.h>
+#include "DTE.h"
+#include "IP.h"
 
 struct LocationTime {
   unsigned int locationCode;
