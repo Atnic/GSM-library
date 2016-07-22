@@ -2,8 +2,8 @@
 #define HTTP_h
 
 #include <Arduino.h>
-#include <DTE.h>
-#include <IP.h>
+#include "DTE.h"
+#include "IP.h"
 
 struct HttpStatus {
   char mode[5];
@@ -20,6 +20,7 @@ private:
   bool initialized;
   struct HttpStatus httpStatus;
   unsigned long serverResponseDataLength;
+  bool sslEnabled;
 
   /**
    * Convert HTTP Method to index
@@ -113,6 +114,19 @@ private:
    * @return  true: If command successful, false: Otherwise
    */
   bool atReadHttpStatus(void);
+
+  /**
+   * Command AT+HTTPSSL?
+   * @return  true: If command successful, false: Otherwise
+   */
+  bool atSslHttp(void);
+
+  /**
+   * Command AT+HTTPSSL=
+   * @param  enable true: Enable, false: Disabled
+   * @return        true: If command successful, false: Otherwise
+   */
+  bool atSslHttp(bool enable);
 
 public:
   HTTP(DTE &dte, IP &ip);

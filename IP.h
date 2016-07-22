@@ -2,8 +2,8 @@
 #define IP_h
 
 #include <Arduino.h>
-#include <DTE.h>
-#include <GPRS.h>
+#include "DTE.h"
+#include "GPRS.h"
 
 struct ConnStatus {
   unsigned char status;

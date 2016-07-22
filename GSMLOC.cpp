@@ -10,7 +10,7 @@ bool GSMLOC::atGSMLocationAndTime(unsigned char type, unsigned char cid) {
 
 	dte->clearReceivedBuffer();
   if(!dte->ATCommand(buffer)) return false;
-  if(!dte->ATResponseContain(response, 3000)) return false;
+  if(!dte->ATResponseContain(response, 10000)) return false;
   char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
   char *str = strtok(pointer, ",");
   for (size_t i = 0; i < 5 && str != NULL; i++) {

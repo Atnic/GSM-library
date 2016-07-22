@@ -33,19 +33,18 @@ void loop() {
   if(!dte.AT())
     dte.powerReset();
 
-  Serial.print("Network Registration: ");
-  Serial.println(gsm.getNetworkRegistration().status);
-  Serial.print("GPRS Attached: ");
-  Serial.println(gprs.isAttached());
-  Serial.println("Wait to connect...");
-  Serial.println();
   if(ip.openConnection()) { // Open Connection, if it's already connected it just return true
+    Serial.print("Network Registration: ");
+    Serial.println(gsm.getNetworkRegistration().status);
+    Serial.print("GPRS Attached: ");
+    Serial.println(gprs.isAttached());
     Serial.println("Connected!");
+    Serial.println();
     unsigned long timeout = 30; // The minimum HTTP Timeout setting
-    http.initialize(timeout);
-    http.action("GET", "arduino.cc/asciilogo.txt");
+    http.initialize(timeout); // First parameter is for enabling SSL
+    http.action("GET", "https://arduino.cc/asciilogo.txt");
     unsigned long t = millis();
-    while(millis() - t < timeout*1000 && !Urc.httpAction.updated)
+    while((millis() - t < (timeout+1)*1000) && !Urc.httpAction.updated && dte.AT())
       dte.clearReceivedBuffer(); // This is necessary, so URC can be captured
     if(Urc.httpAction.updated && Urc.httpAction.statusCode == 200) {
       Serial.println("Data Received: ");
@@ -69,11 +68,13 @@ void loop() {
       //Serial.println();
     }
     else {
+      Serial.println("Failed");
       if (Urc.httpAction.updated) {
         Serial.print("Status Code: ");
         Serial.println(Urc.httpAction.statusCode);
+        if (Urc.httpAction.statusCode == 601)
+          Serial.print("Try to add https:// for SSL site or http:// for non-SSL site");
       }
-      Serial.println("Failed");
     }
     http.terminate();
     Serial.println("Done!");
@@ -84,6 +85,14 @@ void loop() {
       Serial.read();
       delay(50);
     }
+  }
+  else {
+    Serial.print("Network Registration: ");
+    Serial.println(gsm.getNetworkRegistration().status);
+    Serial.print("GPRS Attached: ");
+    Serial.println(gprs.isAttached());
+    Serial.println("Wait to connect...");
+    Serial.println();
   }
   delay(1000); //It's just for debugging, no need to delay actually
 }

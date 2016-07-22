@@ -2,7 +2,7 @@
 #define GSM_h
 
 #include <Arduino.h>
-#include <DTE.h>
+#include "DTE.h"
 
 struct Operator {
   unsigned char mode;

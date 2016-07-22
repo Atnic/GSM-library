@@ -2,7 +2,7 @@
 #define GPRS_h
 
 #include <Arduino.h>
-#include <DTE.h>
+#include "DTE.h"
 
 class GPRS
 {
