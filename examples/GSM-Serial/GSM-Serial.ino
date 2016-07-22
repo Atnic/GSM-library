@@ -19,7 +19,7 @@ void loop(void) {
   if (Serial.available() > 0) {
     SSerial.write(Serial.read());
   }
-  if (SSerial.available() > 0) {
+  while (SSerial.available() > 0) {
     Serial.write(SSerial.read());
   }
 }
