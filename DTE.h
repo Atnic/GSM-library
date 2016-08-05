@@ -21,6 +21,7 @@ private:
 	bool debug;
 	char response[103];
 	bool echo;
+	char productSerialNumberIdentification[17];
 	struct FlowControl flowControl;
 	long baudrate;
 	bool powerDown;
@@ -43,6 +44,12 @@ private:
 	 * @return  true: If command successful, false: Otherwise
 	 */
 	bool atSetLocalDataFlowControl(void);
+
+	/**
+	 * Command AT+GSN
+	 * @return  true: If command successful, false: Otherwise
+	 */
+	bool atRequestProductSerialNumberIdentification(void);
 
 	/**
 	 * Command AT+IFC=
@@ -272,6 +279,12 @@ public:
 	 * @return      true: If success, false: Otherwise
 	 */
 	bool setEcho(bool echo);
+
+	/**
+	 * Get Product Serial Number Identification (IMEI)
+	 * @return  IMEI string
+	 */
+	const char *getProductSerialNumberIdentification(void);
 
 	/**
 	 * Get Flow Control

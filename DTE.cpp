@@ -36,6 +36,24 @@ bool DTE::atSetCommandEchoMode(bool echo) {
 	return true;
 }
 
+bool DTE::atRequestProductSerialNumberIdentification(void) {
+	const __FlashStringHelper *command = F("AT+GSN\r");
+	char productSerialNumberIdentification[17];
+
+	clearReceivedBuffer();
+  if(!ATCommand(command)) return false;
+	if(!ATResponse()) return false;
+	while (!isResponseOk() && !isdigit(*getResponse())) {
+		if(!ATResponse()) return false;
+	}
+	if (!isResponseOk()) {
+		strcpy(productSerialNumberIdentification, getResponse());
+	}
+  if(!ATResponseOk()) return false;
+	strcpy(this->productSerialNumberIdentification, productSerialNumberIdentification);
+	return true;
+}
+
 bool DTE::atSetLocalDataFlowControl(void) {
 	const __FlashStringHelper *command = F("AT+IFC?\r");
 	const __FlashStringHelper *response = F("+IFC: ");
@@ -414,6 +432,11 @@ bool DTE::setEcho(bool echo) {
 	if (this->echo == echo) return true;
 	if (!atSetCommandEchoMode(echo)) return false;
 	return true;
+}
+
+const char *DTE::getProductSerialNumberIdentification(void) {
+	if (strlen(productSerialNumberIdentification) == 0) atRequestProductSerialNumberIdentification();
+	return productSerialNumberIdentification;
 }
 
 struct FlowControl DTE::getFlowControl(void) {
