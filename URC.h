@@ -24,6 +24,20 @@ public:
     unsigned int statusCode;
     unsigned int dataLength;
   };
+  struct Psuttz {
+    bool updated = false;
+    unsigned int year;
+    unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    unsigned char second;
+    unsigned char timezone;
+    unsigned char dst;
+  };
+
+  /** Get Local Timestamp Unsolicited Result Code */
+  struct Psuttz psuttz;
 
   /** Call Ready Unsolicited Result Code */
   struct CallReady callReady;

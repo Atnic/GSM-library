@@ -10,6 +10,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   const __FlashStringHelper *urcCallReady = F("Call Ready");
   const __FlashStringHelper *urcHttpAction = F("+HTTPACTION:");
   const __FlashStringHelper *urcEnterPin = F("+CPIN: ");
+  const __FlashStringHelper *urcGetLocalTimestamp = F("*PSUTTZ: ");
 
   char *pointer;
   if((pointer = strstr_P(urc, (const char *)urcCallReady)) != NULL) {
@@ -34,6 +35,22 @@ bool URC::unsolicitedResultCode(const char urc[]) {
 		char *str = strtok(pointer, "\"");
 		strcpy(enterPin.code, str);
     enterPin.updated = true;
+    return true;
+  }
+  if((pointer = strstr_P(urc, (const char *)urcGetLocalTimestamp)) != NULL) {
+    pointer += strlen_P((const char *)urcEnterPin);
+    char *str = strtok(pointer, ",\" +");
+    for (unsigned char i = 0; i < 8 && str != NULL; i++) {
+      if(i == 0) psuttz.year = atoi(str);
+      if(i == 1) psuttz.month = atoi(str);
+      if(i == 2) psuttz.day = atoi(str);
+      if(i == 3) psuttz.hour = atoi(str);
+      if(i == 4) psuttz.minute = atoi(str);
+      if(i == 5) psuttz.second = atoi(str);
+      if(i == 6) psuttz.timezone = atoi(str)/4;
+			str = strtok(NULL, ",\" +");
+    }
+    psuttz.updated = true;
     return true;
   }
   return false;
