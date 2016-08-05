@@ -184,6 +184,11 @@ void DTE::togglePower(void) {
 	if (AT()) {
 		powerDown = false;
 		Urc.resetUnsolicitedResultCode();
+		if(isEcho())
+			setEcho(false);
+		if(getFlowControl().dce == 0)
+	  	setFlowControl(1, 0);
+		setFlowControlStatusDce(false);
 		return;
 	}
 	else {
@@ -441,11 +446,5 @@ bool DTE::powerReset(void) {
 	while (powerDown) {
 		togglePower();
 	}
-	powerDown = false;
-	if(isEcho())
-		setEcho(false);
-	if(getFlowControl().dce == 0)
-  	setFlowControl(1, 0);
-	setFlowControlStatusDce(false);
 	return true;
 }
