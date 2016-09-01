@@ -218,6 +218,8 @@ void DTE::togglePower(void) {
 
 void DTE::clearReceivedBuffer(void) {
 	debugPrint(F("clearReceivedBuffer"), true);
+
+	if (!isListening()) listen();
   setFlowControlStatusDce(true);
   unsigned long t = millis();
 	if(hardwareSerial) {
@@ -264,6 +266,7 @@ bool DTE::ATCommand(const char at[]) {
 	debugPrint("Command: ");
 	debugPrint(at, true);
 
+	if (!isListening()) listen();
   setFlowControlStatusDce(false);
 	if(hardwareSerial) hardwareSerial->print(at);
 	if(softwareSerial) softwareSerial->print(at);
