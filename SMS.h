@@ -162,6 +162,16 @@ public:
    */
   bool sendSMS(const char destination[], const char message[]);
 
+
+  /**
+   * Send SMS. If message length longer than 160 character,
+   * this method automatically send multiple SMS.
+   * @param  destination Destination Address/Phone Number
+   * @param  message     Message
+   * @return             true: If command successful, false: Otherwise
+   */
+  // bool selectSMSFormat(bool mode);
+
   /**
    * Is show extended parameter for +CGMR
    * @return  true: Show, false: Hide

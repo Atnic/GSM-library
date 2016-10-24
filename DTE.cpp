@@ -36,6 +36,24 @@ bool DTE::atSetCommandEchoMode(bool echo) {
 	return true;
 }
 
+bool DTE::atRequestProductSerialNumberIdentification(void) {
+	const __FlashStringHelper *command = F("AT+GSN\r");
+	char productSerialNumberIdentification[17];
+
+	clearReceivedBuffer();
+  if(!ATCommand(command)) return false;
+	if(!ATResponse()) return false;
+	while (!isResponseOk() && !isdigit(*getResponse())) {
+		if(!ATResponse()) return false;
+	}
+	if (!isResponseOk()) {
+		strcpy(productSerialNumberIdentification, getResponse());
+	}
+  if(!ATResponseOk()) return false;
+	strcpy(this->productSerialNumberIdentification, productSerialNumberIdentification);
+	return true;
+}
+
 bool DTE::atSetLocalDataFlowControl(void) {
 	const __FlashStringHelper *command = F("AT+IFC?\r");
 	const __FlashStringHelper *response = F("+IFC: ");
@@ -184,6 +202,11 @@ void DTE::togglePower(void) {
 	if (AT()) {
 		powerDown = false;
 		Urc.resetUnsolicitedResultCode();
+		if(isEcho())
+			setEcho(false);
+		if(getFlowControl().dce == 0)
+	  	setFlowControl(1, 0);
+		setFlowControlStatusDce(false);
 		return;
 	}
 	else {
@@ -195,6 +218,8 @@ void DTE::togglePower(void) {
 
 void DTE::clearReceivedBuffer(void) {
 	debugPrint(F("clearReceivedBuffer"), true);
+
+	if (!isListening()) listen();
   setFlowControlStatusDce(true);
   unsigned long t = millis();
 	if(hardwareSerial) {
@@ -241,6 +266,7 @@ bool DTE::ATCommand(const char at[]) {
 	debugPrint("Command: ");
 	debugPrint(at, true);
 
+	if (!isListening()) listen();
   setFlowControlStatusDce(false);
 	if(hardwareSerial) hardwareSerial->print(at);
 	if(softwareSerial) softwareSerial->print(at);
@@ -411,6 +437,11 @@ bool DTE::setEcho(bool echo) {
 	return true;
 }
 
+const char *DTE::getProductSerialNumberIdentification(void) {
+	if (strlen(productSerialNumberIdentification) == 0) atRequestProductSerialNumberIdentification();
+	return productSerialNumberIdentification;
+}
+
 struct FlowControl DTE::getFlowControl(void) {
   if(!atSetLocalDataFlowControl()) return  (struct FlowControl) { 0, true, 0, true };
   return this->flowControl;
@@ -441,11 +472,5 @@ bool DTE::powerReset(void) {
 	while (powerDown) {
 		togglePower();
 	}
-	powerDown = false;
-	if(isEcho())
-		setEcho(false);
-	if(getFlowControl().dce == 0)
-  	setFlowControl(1, 0);
-	setFlowControlStatusDce(false);
 	return true;
 }

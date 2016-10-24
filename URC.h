@@ -24,6 +24,26 @@ public:
     unsigned int statusCode;
     unsigned int dataLength;
   };
+  struct Psuttz {
+    bool updated = false;
+    unsigned int year;
+    unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    unsigned char second;
+    unsigned char timezone;
+    unsigned char dst;
+  };
+  struct NewMessageIndication {
+    bool updated = false;
+    char mem[3];
+    unsigned char index;
+  };
+
+
+  /** Get Local Timestamp Unsolicited Result Code */
+  struct Psuttz psuttz;
 
   /** Call Ready Unsolicited Result Code */
   struct CallReady callReady;
@@ -33,6 +53,9 @@ public:
 
   /** +HTTPACTION Unsolicited Result Code */
   struct HttpAction httpAction;
+
+  /** +CMTI Unsolicited Result Code */
+  struct NewMessageIndication newMessageIndication;
 
 	URC();
 
