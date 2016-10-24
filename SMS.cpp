@@ -268,6 +268,9 @@ bool SMS::isTextMode(void) {
 struct Message SMS::readSMS(unsigned char index) {
   struct Message message;
 
+  if (!isTextMode()) {
+    if(!atSelectSMSFormat(true)) return message;
+  }
   if (!isShowParameter()) {
     if(!atShowSMSTextModeParameter(true)) {
       this->message = message;
@@ -305,6 +308,29 @@ bool SMS::sendSMS(const char destination[], const char message[]) {
 
   return success;
 }
+
+// bool SMS::selectSMSFormat(bool mode) {
+//   bool success = false;
+//
+//   if (!isTextMode()) {
+//     if(!atSelectSMSFormat(true)) return false;
+//   }
+//   unsigned int partial = (strlen(message)/160) + 1;
+//   for (size_t i = 0; i < partial; i++) {
+//     char messageBuffer[161] = "";
+//     strncpy(messageBuffer, message + (i*160), 160);
+//     messageBuffer[160] = '\0';
+//     if (i < partial-1) {
+//
+//     }
+//     else {
+//
+//     }
+//     success = atSendSMS(destination, messageBuffer);
+//   }
+//
+//   return success;
+// }
 
 bool SMS::isShowParameter(void) {
   static bool flag = false;
