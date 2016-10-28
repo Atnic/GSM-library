@@ -243,6 +243,58 @@ bool GSM::atBatteryCharge(void) {
 	return true;
 }
 
+//-----------------------------------------------------------------------------------------
+bool GSM::atUnstructuredSupplementaryServiceData(void) {
+	const __FlashStringHelper *command = F("AT+CUSD?\r");
+	const __FlashStringHelper *response = F("+CUSD: ");
+
+	dte->clearReceivedBuffer();
+	if(!dte->ATCommand(command)) return false;
+	if(!dte->ATResponseContain(response)) return false;
+	char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
+	char *str = strtok(pointer, " ");
+	serviceData.n = atoi(str);
+	if(!dte->ATResponseOk()) return false;
+
+	return true;
+}
+
+bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n) {
+  char buffer[10]; // "AT+CUSD=1
+	const __FlashStringHelper *command = F("AT+CUSD=%d\r");
+	sprintf_P(buffer, (const char *)command, n);
+
+	dte->clearReceivedBuffer();
+	if(!dte->ATCommand(buffer)) return false;
+	if(!dte->ATResponseOk()) return false;
+	return true;
+}
+
+bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str[]) {
+
+	char buffer[14 + strlen(str)]; // "AT+CUSD=1,"*123#"\r"
+	const __FlashStringHelper *command = F("AT+CUSD=%d,\"%s\"\r");
+	sprintf_P(buffer, (const char *)command, n, str);
+
+	dte->clearReceivedBuffer();
+	if(!dte->ATCommand(buffer)) return false;
+	if(!dte->ATResponseOk()) return false;
+	return true;
+}
+
+bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs) {
+
+	char buffer[13 + strlen(str) + 3]; // "AT+CUSD=1,"*123#",XX"
+	const __FlashStringHelper *command = F("AT+CUSD=%d,\"%s\",%d\r");
+	sprintf_P(buffer, (const char *)command, n, str, dcs);
+
+	dte->clearReceivedBuffer();
+	if(!dte->ATCommand(buffer)) return false;
+	if(!dte->ATResponseOk()) return false;
+	return true;
+}
+//-----------------------------------------------------------------------------------------
+
 /* GSM Class */
 GSM::GSM(DTE &dte) {
 	this->dte = &dte;
@@ -318,3 +370,15 @@ struct BatteryStatus GSM::getBatteryStatus(void) {
 	atBatteryCharge();
 	return batteryStatus;
 }
+
+//------------------------------------------------------------------------------
+bool GSM::sendServiceData(const char ServiceNumber[]){
+	if(!atUnstructuredSupplementaryServiceData(1, ServiceNumber))
+		return false;
+	return true;
+}
+
+void GSM::cancelServiceData(void){
+	atUnstructuredSupplementaryServiceData(2);
+}
+//------------------------------------------------------------------------------
