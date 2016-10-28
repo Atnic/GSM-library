@@ -11,6 +11,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   const __FlashStringHelper *urcHttpAction = F("+HTTPACTION:");
   const __FlashStringHelper *urcEnterPin = F("+CPIN: ");
   const __FlashStringHelper *urcNewMessageIndication = F("+CMTI: ");
+  const __FlashStringHelper *urcServiceDataIndication = F("+CUSD: ");
   const __FlashStringHelper *urcGetLocalTimestamp = F("*PSUTTZ: ");
 
   char *pointer;
@@ -63,6 +64,17 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     newMessageIndication.updated = true;
     return true;
   }
+  if((pointer = strstr_P(urc, (const char *)urcServiceDataIndication)) != NULL) {
+    pointer += strlen_P((const char *)urcServiceDataIndication);
+		char *str = strtok(pointer, ",");
+		serviceDataIndication.n = atoi(str);
+		str = strtok(NULL, "\"");
+		strcpy(serviceDataIndication.str, str);
+    str = strtok(NULL, "\",");
+    serviceDataIndication.dcs = atoi(str);
+    serviceDataIndication.updated = true;
+    return true;
+  }
   return false;
 }
 
@@ -70,4 +82,7 @@ void URC::resetUnsolicitedResultCode(void) {
   callReady.updated = false;
   enterPin.updated = false;
   httpAction.updated = false;
+  psuttz.updated = false;
+  newMessageIndication.updated = false;
+  serviceDataIndication.updated = false;
 }

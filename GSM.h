@@ -11,6 +11,10 @@ struct Operator {
   char operNumeric[6];
 };
 
+struct ServiceData {
+  unsigned char n;
+};
+
 struct PhonebookMemoryStorage {
   char storage[3];
   unsigned char used;
@@ -59,6 +63,7 @@ class GSM
 private:
   DTE *dte;
   struct Operator selectedOperator;
+  struct ServiceData serviceData;
   struct PhonebookMemoryStorage phonebookMemoryStorage;
   char pinStatus[11];
   struct NetworkRegistration networkRegistration;
@@ -321,6 +326,10 @@ public:
    * @return  BatteryStatus Struct
    */
   struct BatteryStatus getBatteryStatus(void);
+
+  bool sendServiceData(const char ServiceNumber[]);
+
+  void cancelServiceData(void);
 };
 
 #endif
