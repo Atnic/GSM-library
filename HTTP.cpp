@@ -28,11 +28,15 @@ bool HTTP::atTerminateHttpService(void) {
   return true;
 }
 
-bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue[]) {
+bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue[], const char userdataDelimiter[]) {
   const __FlashStringHelper *command = F("AT+HTTPPARA=\"%s\",\"%s\"\r");
-  char buffer[21 + strlen(paramTag) + strlen(paramValue)]; ///"AT+HTTPPARA=\"{paramTag}\",\"{paramValue}\"\r\r\n"
+  if (strlen(userdataDelimiter) > 0) command = F("AT+HTTPPARA=\"%s\",\"%s\",\"%s\"\r");
+  char buffer[24 + + strlen(paramTag) + strlen(paramValue) + strlen(userdataDelimiter)]; ///"AT+HTTPPARA=\"{paramTag}\",\"{paramValue}\"\r\r\n"
 
-  sprintf_P(buffer, (const char *)command, paramTag, paramValue);
+  if (strlen(userdataDelimiter) == 0)
+    sprintf_P(buffer, (const char *)command, paramTag, paramValue);
+  else
+    sprintf_P(buffer, (const char *)command, paramTag, paramValue, userdataDelimiter);
 
   dte->clearReceivedBuffer();
   if(!dte->ATCommand(buffer)) return false;
@@ -40,10 +44,10 @@ bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue
   return true;
 }
 
-bool HTTP::atSetHttpParametersValue(const __FlashStringHelper paramTag[], const char paramValue[]) {
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper paramTag[], const char paramValue[], const char userdataDelimiter[]) {
   char buffer[strlen_P((const char *)paramTag)+1];
   strcpy_P(buffer, (const char *)paramTag);
-  return atSetHttpParametersValue(buffer, paramValue);
+  return atSetHttpParametersValue(buffer, paramValue, userdataDelimiter);
 }
 
 bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
@@ -205,6 +209,12 @@ bool HTTP::setUserAgent(const char userAgent[]) {
   return true;
 }
 
+bool HTTP::setHeaders(const char headers[], const char userdataDelimiter[]) {
+  if(!initialized) return false;
+  atSetHttpParametersValue(F("USERDATA"), headers, userdataDelimiter);
+  return true;
+}
+
 bool HTTP::action(const char method[], const char url[], const char data[]) {
   if(!initialized) return false;
   if(!getStatus().status == 0) return false;
@@ -232,7 +242,7 @@ bool HTTP::readDataReceived(char buffer[], unsigned long length, unsigned long s
   if(!initialized) return false;
   if(!getStatus().status == 0) return false;
   if(Urc.httpAction.statusCode != 0) {
-    if(!Urc.httpAction.updated || !(Urc.httpAction.statusCode == 200)) return false;
+    if(!Urc.httpAction.updated) return false;
   }
   if(!atReadHttpServerResponse(buffer, startAddress, length)) return false;
   return true;

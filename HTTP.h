@@ -61,7 +61,7 @@ private:
    * @param  paramValue Parameter Value
    * @return            true: If command successful, false: Otherwise
    */
-  bool atSetHttpParametersValue(const char paramTag[], const char paramValue[]);
+  bool atSetHttpParametersValue(const char paramTag[], const char paramValue[], const char userdataDelimiter[] = "");
 
   /**
    * Command AT+HTTPPARA
@@ -80,7 +80,7 @@ private:
    * @param  paramValue Parameter Value
    * @return            true: If command successful, false: Otherwise
    */
-  bool atSetHttpParametersValue(const __FlashStringHelper paramTag[], const char paramValue[]);
+  bool atSetHttpParametersValue(const __FlashStringHelper paramTag[], const char paramValue[], const char userdataDelimiter[] = "");
 
   /**
    * Command AT+HTTPDATA
@@ -151,6 +151,13 @@ public:
    * @return           true: If success, false: Otherwise
    */
   bool setUserAgent(const char userAgent[]);
+
+  /**
+   * Set Header
+   * @param  header Header string with semicolon demiliter
+   * @return        true: If success, false: Otherwise
+   */
+  bool setHeaders(const char header[], const char userdataDelimiter[] = "");
 
   /**
    * Submit HTTP Action

@@ -40,6 +40,12 @@ public:
     char mem[3];
     unsigned char index;
   };
+  struct ServiceDataIndication {
+    bool updated = false;
+    unsigned char n;
+    char str[200];
+    unsigned char dcs;
+  };
 
 
   /** Get Local Timestamp Unsolicited Result Code */
@@ -56,6 +62,9 @@ public:
 
   /** +CMTI Unsolicited Result Code */
   struct NewMessageIndication newMessageIndication;
+
+  /** +CUSD Unsolicited Result Code */
+  struct ServiceDataIndication serviceDataIndication;
 
 	URC();
 

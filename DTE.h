@@ -19,7 +19,7 @@ private:
 	SoftwareSerial *softwareSerial;
 	int powerPin;
 	bool debug;
-	char response[103];
+	char response[203];
 	bool echo;
 	char productSerialNumberIdentification[17];
 	struct FlowControl flowControl;
