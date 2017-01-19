@@ -15,10 +15,9 @@
         "type": "git",
         "url": "https://github.com/Atnic/GSM-library.git"
     },
-    "version": "0.5.1",
+    "version": "0.5.2-alpha",
     "license": "Apache-2.0",
-    "downloadUrl": "https://github.com/Atnic/GSM-library/archive/v0.5.1-alpha.tar.gz",
-    "include": "GSM-library-0.5.1",
+    "downloadUrl": "https://github.com/Atnic/GSM-library/archive/v0.5.2-alpha.tar.gz",
     "frameworks": ["arduino"],
     "platforms": ["atmelavr"]
 }
