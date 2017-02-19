@@ -40,6 +40,7 @@ unsolicitedResultCode	KEYWORD2
 getResponse	KEYWORD2
 isEcho	KEYWORD2
 setEcho	KEYWORD2
+getProductSerialNumberIdentification	KEYWORD2
 getFlowControl	KEYWORD2
 setFlowControl	KEYWORD2
 setFlowControlStatusDce	KEYWORD2
@@ -57,12 +58,15 @@ getSignalQuality	KEYWORD2
 getClock	KEYWORD2
 getSubscriberNumber	KEYWORD2
 getBatteryStatus	KEYWORD2
+sendServiceData	KEYWORD2
+cancelServiceData	KEYWORD2
 
 getLocationTime	KEYWORD2
 
 getStatus	KEYWORD2
 initialize	KEYWORD2
 setUserAgent	KEYWORD2
+setHeaders	KEYWORD2
 action	KEYWORD2
 readDataReceived	KEYWORD2
 terminate	KEYWORD2
