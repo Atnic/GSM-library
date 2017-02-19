@@ -12,9 +12,8 @@ struct HttpStatus {
   unsigned long remain;
 };
 
-class HTTP
-{
-private:
+class HTTP {
+ private:
   DTE *dte;
   IP *ip;
   bool initialized;
@@ -128,7 +127,7 @@ private:
    */
   bool atSslHttp(bool enable);
 
-public:
+ public:
   HTTP(DTE &dte, IP &ip);
 
   /**

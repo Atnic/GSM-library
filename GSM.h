@@ -58,9 +58,8 @@ struct BatteryStatus {
   float voltage;
 };
 
-class GSM
-{
-private:
+class GSM {
+ private:
   DTE *dte;
   struct Operator selectedOperator;
   struct ServiceData serviceData;
@@ -272,7 +271,7 @@ private:
    */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs);
 
-public:
+ public:
   GSM(DTE &dte);
 
   /**
@@ -327,8 +326,16 @@ public:
    */
   struct BatteryStatus getBatteryStatus(void);
 
-  bool sendServiceData(const char ServiceNumber[]);
+  /**
+   * Send USSD data
+   * @param  serviceNumber String to access USSD, ex: *123#
+   * @return               true: If command successful, false: Otherwise
+   */
+  bool sendServiceData(const char serviceNumber[]);
 
+  /**
+   * Cancel/close USSD session
+   */
   void cancelServiceData(void);
 };
 

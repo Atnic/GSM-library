@@ -4,13 +4,10 @@
 #include <Arduino.h>
 
 // Library Interface Description
-class URC
-{
-private:
-
-protected:
-
-public:
+class URC {
+ private:
+ protected:
+ public:
   struct CallReady {
     bool updated = false;
   };
@@ -47,7 +44,6 @@ public:
     unsigned char dcs;
   };
 
-
   /** Get Local Timestamp Unsolicited Result Code */
   struct Psuttz psuttz;
 
@@ -66,7 +62,7 @@ public:
   /** +CUSD Unsolicited Result Code */
   struct ServiceDataIndication serviceDataIndication;
 
-	URC();
+  URC();
 
   /**
    * Unsolicited Result Code (URC) check, if it URC,
@@ -74,7 +70,7 @@ public:
    * @param  urc Unsolicited Result Code string
    * @return     true: If it is URC, false: If it is not
    */
-	bool unsolicitedResultCode(const char urc[]);
+  bool unsolicitedResultCode(const char urc[]);
 
   /** Reset URC Object member value. This should be called if Module Reset */
   void resetUnsolicitedResultCode(void);
