@@ -1,8 +1,9 @@
 #include <SoftwareSerial.h>
+
 #include <DTE.h>
-#include <URC.h>
-#include <SMS.h>
 #include <GSM.h>
+#include <SMS.h>
+#include <URC.h>
 
 #define PINPOWER 9
 #define DEBUG false
@@ -18,8 +19,8 @@ void setup(void) {
   Serial.println("Turning ON SIM900...");
   dte.powerReset();
   Serial.println("Waiting Network...");
-  while(gsm.getNetworkRegistration().status != 1){
-  };
+  while (gsm.getNetworkRegistration().status != 1)
+    ;
   Serial.print("Connecting ");
   Serial.println(gsm.getOperator().oper);
 
@@ -29,10 +30,10 @@ void setup(void) {
 }
 
 void loop(void) {
-  if(!dte.AT())
+  if (!dte.AT())
     dte.powerReset();
 
-  if(Urc.newMessageIndication.updated){
+  if (Urc.newMessageIndication.updated) {
     struct Message m = sms.readSMS(Urc.newMessageIndication.index);
     Serial.println(m.address);
     Serial.println(m.data);
