@@ -19,9 +19,8 @@ struct Message {
   char data[163] = "";
 };
 
-class SMS
-{
-private:
+class SMS {
+ private:
   DTE *dte;
   bool textMode = false;
   struct Message message;
@@ -105,7 +104,7 @@ private:
    */
   bool atShowSMSTextModeParameter(bool show);
 
-public:
+ public:
   SMS(DTE &dte);
 
   /**
@@ -161,7 +160,6 @@ public:
    * @return             true: If command successful, false: Otherwise
    */
   bool sendSMS(const char destination[], const char message[]);
-
 
   /**
    * Send SMS. If message length longer than 160 character,

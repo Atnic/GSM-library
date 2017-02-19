@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+
 #include <DTE.h>
 
 #define PINPOWER 9
@@ -12,7 +13,7 @@ void setup(void) {
   SSerial.begin(19200);
 
   dte.powerReset();
-  dte.setFlowControl(0, 0); //Turn off FlowControl, because defaults on.
+  dte.setFlowControl(0, 0);  //Turn off FlowControl, because defaults on.
 }
 
 void loop(void) {

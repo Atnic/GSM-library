@@ -13,9 +13,8 @@ struct LocationTime {
   char time[9];
 };
 
-class GSMLOC
-{
-private:
+class GSMLOC {
+ private:
   DTE *dte;
   IP *ip;
   struct LocationTime locationTime;
@@ -30,7 +29,7 @@ private:
    */
   bool atGSMLocationAndTime(unsigned char type, unsigned char cid = 1);
 
-public:
+ public:
   GSMLOC(DTE &dte, IP &ip);
 
   /**

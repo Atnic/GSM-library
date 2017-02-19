@@ -4,9 +4,8 @@
 #include <Arduino.h>
 #include "DTE.h"
 
-class GPRS
-{
-private:
+class GPRS {
+ private:
   DTE *dte;
   bool attached = false;
 
@@ -23,7 +22,7 @@ private:
    */
   bool atAttachGPRSService(bool attach);
 
-public:
+ public:
   GPRS(DTE &dte);
 
   /**

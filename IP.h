@@ -25,9 +25,8 @@ struct BearerProfile {
   struct ConnParam connParam;
 };
 
-class IP
-{
-private:
+class IP {
+ private:
   DTE *dte;
   GPRS *gprs;
   struct BearerProfile bearerProfile[3];
@@ -54,7 +53,7 @@ private:
    */
   bool atBearerSettings(unsigned char cmdType, unsigned char cid, const char paramTag[] = "", const char paramValue[] = "");
 
-public:
+ public:
   IP(DTE &dte, GPRS &gprs);
 
   /**
