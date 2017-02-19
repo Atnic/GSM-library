@@ -31,7 +31,7 @@ bool HTTP::atTerminateHttpService(void) {
 bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue[], const char userdataDelimiter[]) {
   const __FlashStringHelper *command = F("AT+HTTPPARA=\"%s\",\"%s\"\r");
   if (strlen(userdataDelimiter) > 0) command = F("AT+HTTPPARA=\"%s\",\"%s\",\"%s\"\r");
-  char buffer[24 + + strlen(paramTag) + strlen(paramValue) + strlen(userdataDelimiter)]; ///"AT+HTTPPARA=\"{paramTag}\",\"{paramValue}\"\r\r\n"
+  char buffer[22 + strlen(paramTag) + strlen(paramValue) + strlen(userdataDelimiter)]; // "AT+HTTPPARA=\"{paramTag}\",\"{paramValue}\",\"{userdataDelimiter}\"\r"
 
   if (strlen(userdataDelimiter) == 0)
     sprintf_P(buffer, (const char *)command, paramTag, paramValue);
@@ -53,7 +53,7 @@ bool HTTP::atSetHttpParametersValue(const __FlashStringHelper paramTag[], const 
 bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
   const __FlashStringHelper *command = F("AT+HTTPDATA=%u,%d\r");
   const __FlashStringHelper *response = F("DOWNLOAD");
-  char buffer[26]; // "AT+HTTPDATA={strlen(data)},{timeout}}\r\r\n"
+  char buffer[15 + 4 + 5]; // "AT+HTTPDATA={strlen(data)},{timeout}}\r"
 
   sprintf_P(buffer, (const char *)command, strlen(data), timeout);
 
@@ -64,7 +64,7 @@ bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
   unsigned long t = millis();
   while(i < strlen(data)) {
     i += dte->write(data);
-    if(millis() - t > (timeout*1000)) return false;
+    if(millis() - t > timeout) return false;
   }
   if(!dte->ATResponseOk()) return false;
   return true;
@@ -72,7 +72,7 @@ bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
 
 bool HTTP::atHttpMethodAction(unsigned char method) {
   const __FlashStringHelper *command = F("AT+HTTPACTION=%d\r");
-  char buffer[19]; // "AT+HTTPACTION={method}\r\r\n"
+  char buffer[17]; // "AT+HTTPACTION=X\r"
 
   sprintf_P(buffer, (const char *)command, method);
 
@@ -87,7 +87,7 @@ bool HTTP::atHttpMethodAction(unsigned char method) {
 }
 
 bool HTTP::atReadHttpServerResponse(char dataReceived[], unsigned long startAddress, unsigned long byteSize) {
-  char buffer[29]; // "AT+HTTPREAD=XXXXXX,XXXXXX\r\r\n"
+  char buffer[15 + 7 + 7]; // "AT+HTTPREAD=XXXXXXX,XXXXXXX\r"
   unsigned long serverResponseDataLength = 0;
 
   if(byteSize > 0) {
@@ -159,7 +159,7 @@ bool HTTP::atSslHttp(void) {
 
 bool HTTP::atSslHttp(bool enable) {
   const __FlashStringHelper *command = F("AT+HTTPSSL=%d\r");
-  char buffer[19]; // "AT+HTTPSSL={enable}\r\r\n"
+  char buffer[14]; // "AT+HTTPSSL=X\r"
 
   sprintf_P(buffer, (const char *)command, enable? 1 : 0);
 

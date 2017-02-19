@@ -200,7 +200,7 @@ bool SMS::atReadSMS(unsigned char index, unsigned char mode) {
 bool SMS::atSendSMS(const char destination[], char message[]) {
 	const __FlashStringHelper *command = F("AT+CMGS=\"%s\"\r");
 	const __FlashStringHelper *response = F("+CMGS: ");
-	char buffer[28]; // "AT+CMGS=\"xxxxxxxxxxxxxxxx\"\r"
+	char buffer[12 + strlen(destination)]; // "AT+CMGS=\"{destination}\"\r"
 
 	sprintf_P(buffer, (const char *)command, destination);
 

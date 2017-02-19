@@ -17,7 +17,7 @@ bool GPRS::atAttachGPRSService(void) {
 
 bool GPRS::atAttachGPRSService(bool attach) {
 	const __FlashStringHelper *command = F("AT+CGATT=%d\r");
-	char buffer[14]; // "AT+CGATT={attach}\r\r\n"
+	char buffer[12]; // "AT+CGATT=X\r"
 
 	sprintf_P(buffer, (const char *)command, (attach)?1:0);
 

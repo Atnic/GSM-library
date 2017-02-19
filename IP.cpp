@@ -1,7 +1,7 @@
 #include "IP.h"
 
 bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const char paramTag[], const char paramValue[]) {
-	char buffer[22 + strlen(paramTag) + strlen(paramValue)];  // "AT+SAPBR=X,X,\"{paramTag}\",\"{paramValue}\"\r\r\n"
+	char buffer[20 + strlen(paramTag) + strlen(paramValue)];  // "AT+SAPBR=X,X,\"{paramTag}\",\"{paramValue}\"\r"
 	struct BearerProfile bearerProfile;
 
 	if(cmdType <= 5 && cmdType != 3) {

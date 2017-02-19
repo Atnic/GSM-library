@@ -311,6 +311,7 @@ bool DTE::ATResponse(char buffer[], size_t bufferSize, unsigned long timeout) {
 			debugPrint(F("No response"), true);
 			return false;
 		}
+		delay(50);
 	}
 
 	t = millis();

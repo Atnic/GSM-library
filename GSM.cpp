@@ -29,7 +29,7 @@ bool GSM::atOperatorSelection(void) {
 }
 
 bool GSM::atOperatorSelection(unsigned char mode, unsigned char format, const char oper[]) {
-	char buffer[13 + strlen(oper)]; // "AT+COPS=X,X,{oper}\r\r\n"
+	char buffer[16 + strlen(oper)]; // "AT+COPS=X,X,\"{oper}\"\r"
 
 	if(mode == 0) {
 		const __FlashStringHelper *command = F("AT+COPS=%d\r");
@@ -81,7 +81,7 @@ bool GSM::atSelectPhonebookMemoryStorage(void) {
 
 bool GSM::atSelectPhonebookMemoryStorage(const char storage[]) {
 	const __FlashStringHelper *command = F("AT+CPBS=\"%s\"\r");
-	char buffer[14 + strlen(storage)]; // "AT+CPBS=\"{storage}\"\r\r\n"
+	char buffer[12 + strlen(storage)]; // "AT+CPBS=\"{storage}\"\r"
 
 	sprintf_P(buffer, (const char *)command, storage);
 
@@ -129,7 +129,7 @@ bool GSM::atNetworkRegistration(void) {
 
 bool GSM::atNetworkRegistration(unsigned char n) {
 	const __FlashStringHelper *command = F("AT+CGREG=%d\r");
-	char buffer[11]; // "AT+CGREG=X\r\r\n"
+	char buffer[12]; // "AT+CGREG=X\r"
 
 	sprintf_P(buffer, (const char *)command, n);
 
@@ -166,7 +166,7 @@ bool GSM::atSubscriberNumber(void) {
 
 	dte->clearReceivedBuffer();
   if(!dte->ATCommand(command)) return false;
-	if(!dte->ATResponseContain(response)) return false;
+	if(!dte->ATResponseContain(response) || dte->isResponseOk()) return false;
 	char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
 	char *str = strtok(pointer, ",");
 	for (unsigned char i = 0; i < 5 && str != NULL; i++) {
@@ -211,7 +211,7 @@ bool GSM::atClock(void) {
 
 bool GSM::atClock(const char timestamp[]) {
 	const __FlashStringHelper *command = F("AT+CCLK=\"%s\"\r");
-	char buffer[14 + strlen(timestamp)]; // "AT+CCLK=\"{timestamp}\"\r\r\n"
+	char buffer[12 + strlen(timestamp)]; // "AT+CCLK=\"{timestamp}\"\r"
 
 	sprintf_P(buffer, (const char *)command, timestamp);
 
@@ -260,7 +260,7 @@ bool GSM::atUnstructuredSupplementaryServiceData(void) {
 }
 
 bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n) {
-  char buffer[10]; // "AT+CUSD=1
+  char buffer[11]; // "AT+CUSD=X\r"
 	const __FlashStringHelper *command = F("AT+CUSD=%d\r");
 	sprintf_P(buffer, (const char *)command, n);
 
@@ -272,7 +272,7 @@ bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n) {
 
 bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str[]) {
 
-	char buffer[14 + strlen(str)]; // "AT+CUSD=1,"*123#"\r"
+	char buffer[14 + strlen(str)]; // "AT+CUSD=1,\"{str}\"\r"
 	const __FlashStringHelper *command = F("AT+CUSD=%d,\"%s\"\r");
 	sprintf_P(buffer, (const char *)command, n, str);
 
@@ -284,7 +284,7 @@ bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str
 
 bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs) {
 
-	char buffer[13 + strlen(str) + 3]; // "AT+CUSD=1,"*123#",XX"
+	char buffer[17 + strlen(str)]; // "AT+CUSD=1,\"{str}\",XX\r"
 	const __FlashStringHelper *command = F("AT+CUSD=%d,\"%s\",%d\r");
 	sprintf_P(buffer, (const char *)command, n, str, dcs);
 
