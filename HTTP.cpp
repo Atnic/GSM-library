@@ -56,10 +56,40 @@ bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const c
   return atSetHttpParametersValue(buffer, paramValue, userdataDelimiter);
 }
 
-bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue[], const char userdataDelimiter[]) {
+bool HTTP::atSetHttpParametersValue(const char paramTag[], const __FlashStringHelper *paramValue, const char userdataDelimiter[]) {
   char buffer[strlen_P((const char *)paramValue) + 1];
   strcpy_P(buffer, (const char *)paramValue);
   return atSetHttpParametersValue(paramTag, buffer, userdataDelimiter);
+}
+
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue, const char userdataDelimiter[]) {
+  char buffer[strlen_P((const char *)paramValue) + 1];
+  strcpy_P(buffer, (const char *)paramValue);
+  return atSetHttpParametersValue(paramTag, buffer, userdataDelimiter);
+}
+
+bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue[], const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return atSetHttpParametersValue(paramTag, paramValue, buffer);
+}
+
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const char paramValue[], const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return atSetHttpParametersValue(paramTag, paramValue, buffer);
+}
+
+bool HTTP::atSetHttpParametersValue(const char paramTag[], const __FlashStringHelper *paramValue, const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return atSetHttpParametersValue(paramTag, paramValue, buffer);
+}
+
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue, const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return atSetHttpParametersValue(paramTag, paramValue, buffer);
 }
 
 bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
@@ -243,6 +273,18 @@ bool HTTP::setHeaders(const __FlashStringHelper *headers, const char userdataDel
   return setHeaders(buffer, userdataDelimiter);
 }
 
+bool HTTP::setHeaders(const char headers[], const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return setHeaders(headers, buffer);
+}
+
+bool HTTP::setHeaders(const __FlashStringHelper *headers, const __FlashStringHelper *userdataDelimiter) {
+  char buffer[strlen_P((const char *)userdataDelimiter) + 1];
+  strcpy_P(buffer, (const char *)userdataDelimiter);
+  return setHeaders(headers, buffer);
+}
+
 bool HTTP::action(const char method[], const char url[], const char data[]) {
   if (!initialized) return false;
   if (!getStatus().status == 0) return false;
@@ -271,10 +313,34 @@ bool HTTP::action(const __FlashStringHelper *method, const char url[], const cha
   return action(buffer, url, data);
 }
 
+bool HTTP::action(const char method[], const __FlashStringHelper *url, const char data[]) {
+  char buffer[strlen_P((const char *)url) + 1];
+  strcpy_P(buffer, (const char *)url);
+  return action(method, buffer, data);
+}
+
 bool HTTP::action(const __FlashStringHelper *method, const __FlashStringHelper *url, const char data[]) {
   char buffer[strlen_P((const char *)url) + 1];
   strcpy_P(buffer, (const char *)url);
   return action(method, buffer, data);
+}
+
+bool HTTP::action(const char method[], const char url[], const __FlashStringHelper *data) {
+  char buffer[strlen_P((const char *)data) + 1];
+  strcpy_P(buffer, (const char *)data);
+  return action(method, url, buffer);
+}
+
+bool HTTP::action(const __FlashStringHelper *method, const char url[], const __FlashStringHelper *data) {
+  char buffer[strlen_P((const char *)data) + 1];
+  strcpy_P(buffer, (const char *)data);
+  return action(method, url, buffer);
+}
+
+bool HTTP::action(const char method[], const __FlashStringHelper *url, const __FlashStringHelper *data) {
+  char buffer[strlen_P((const char *)data) + 1];
+  strcpy_P(buffer, (const char *)data);
+  return action(method, url, buffer);
 }
 
 bool HTTP::action(const __FlashStringHelper *method, const __FlashStringHelper *url, const __FlashStringHelper *data) {

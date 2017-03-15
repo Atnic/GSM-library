@@ -77,7 +77,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   return false;
 }
 
-bool URC::unsolicitedResultCode(const char urc[]) {
+bool URC::unsolicitedResultCode(const __FlashStringHelper *urc) {
   char buffer[strlen_P((const char *)urc) + 1];
   strcpy_P(buffer, (const char *)urc);
   return unsolicitedResultCode(buffer);

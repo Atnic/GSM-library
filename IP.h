@@ -95,6 +95,28 @@ class IP {
    * @param  paramValue Parameter Value
    * @return            true: If command successful, false: Otherwise
    */
+  bool atBearerSettings(unsigned char cmdType, unsigned char cid, const char paramTag[], const __FlashStringHelper *paramValue);
+
+  /**
+   * Command AT+SABPR
+   * @param  cmdType    Command type 1 - 5
+   *                    0: Close bearer
+   *                    1: Open bearer
+   *                    2: Query bearer
+   *                    3: Set bearer parameter
+   *                    4: Get bearer parameter
+   *                    5: Save the value of parameter to NVRAM
+   * @param  cid        Context Identifier
+   * @param  paramTag   Parameter Tag for command type 3
+   *                    "CONTYPE": GPRS or CSD
+   *                    "APN": Access Point Name
+   *                    "USER": User Name
+   *                    "PWD": Password
+   *                    "PHONENUM": Phone Number for CSD Call
+   *                    "CONRATE": CSD Connection Rate
+   * @param  paramValue Parameter Value
+   * @return            true: If command successful, false: Otherwise
+   */
   bool atBearerSettings(unsigned char cmdType, unsigned char cid, const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue);
 
  public:
@@ -125,7 +147,43 @@ class IP {
    * @param pwd  Password, default: No password
    * @param cid  Context Identifier, default: 1
    */
+  void setConnectionParamGprs(const char apn[], const __FlashStringHelper *user, const char pwd[] = "", unsigned char cid = 1);
+
+  /**
+   * Set GPRS Connection Parameter.
+   * @param apn  Access Point Name
+   * @param user User Name, default: No username
+   * @param pwd  Password, default: No password
+   * @param cid  Context Identifier, default: 1
+   */
   void setConnectionParamGprs(const __FlashStringHelper *apn, const __FlashStringHelper *user, const char pwd[] = "", unsigned char cid = 1);
+
+  /**
+   * Set GPRS Connection Parameter.
+   * @param apn  Access Point Name
+   * @param user User Name, default: No username
+   * @param pwd  Password, default: No password
+   * @param cid  Context Identifier, default: 1
+   */
+  void setConnectionParamGprs(const char apn[], const char user[], const __FlashStringHelper *pwd, unsigned char cid = 1);
+
+  /**
+   * Set GPRS Connection Parameter.
+   * @param apn  Access Point Name
+   * @param user User Name, default: No username
+   * @param pwd  Password, default: No password
+   * @param cid  Context Identifier, default: 1
+   */
+  void setConnectionParamGprs(const __FlashStringHelper *apn, const char user[], const __FlashStringHelper *pwd, unsigned char cid = 1);
+
+  /**
+   * Set GPRS Connection Parameter.
+   * @param apn  Access Point Name
+   * @param user User Name, default: No username
+   * @param pwd  Password, default: No password
+   * @param cid  Context Identifier, default: 1
+   */
+  void setConnectionParamGprs(const char apn[], const __FlashStringHelper *user, const __FlashStringHelper *pwd, unsigned char cid = 1);
 
   /**
    * Set GPRS Connection Parameter.
