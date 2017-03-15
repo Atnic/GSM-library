@@ -121,6 +121,13 @@ class DTE {
   size_t write(const char str[]);
 
   /**
+   * Send string char array
+   * @param  str String to be sent
+   * @return     Total successfully sent char
+   */
+  size_t write(const __FlashStringHelper *str);
+
+  /**
    * Read bytes received from Serial buffer, and save it on buffer.
    * Warning: buffer size must be equal or smaller then length.
    * @param  buffer Buffer to be updated

@@ -77,6 +77,12 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   return false;
 }
 
+bool URC::unsolicitedResultCode(const char urc[]) {
+  char buffer[strlen_P((const char *)urc) + 1];
+  strcpy_P(buffer, (const char *)urc);
+  return unsolicitedResultCode(buffer);
+}
+
 void URC::resetUnsolicitedResultCode(void) {
   callReady.updated = false;
   enterPin.updated = false;

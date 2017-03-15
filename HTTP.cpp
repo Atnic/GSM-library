@@ -8,6 +8,12 @@ unsigned char HTTP::methodIndex(const char method[]) {
   return 0;
 }
 
+unsigned char HTTP::methodIndex(const __FlashStringHelper *method) {
+  char buffer[strlen_P((const char *)method) + 1];
+  strcpy_P(buffer, (const char *)method);
+  return methodIndex(buffer);
+}
+
 bool HTTP::atInitializeHttpService(void) {
   const __FlashStringHelper *command = F("AT+HTTPINIT\r");
 
@@ -44,10 +50,16 @@ bool HTTP::atSetHttpParametersValue(const char paramTag[], const char paramValue
   return true;
 }
 
-bool HTTP::atSetHttpParametersValue(const __FlashStringHelper paramTag[], const char paramValue[], const char userdataDelimiter[]) {
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const char paramValue[], const char userdataDelimiter[]) {
   char buffer[strlen_P((const char *)paramTag) + 1];
   strcpy_P(buffer, (const char *)paramTag);
   return atSetHttpParametersValue(buffer, paramValue, userdataDelimiter);
+}
+
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue[], const char userdataDelimiter[]) {
+  char buffer[strlen_P((const char *)paramValue) + 1];
+  strcpy_P(buffer, (const char *)paramValue);
+  return atSetHttpParametersValue(paramTag, buffer, userdataDelimiter);
 }
 
 bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
@@ -68,6 +80,12 @@ bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
   }
   if (!dte->ATResponseOk()) return false;
   return true;
+}
+
+bool HTTP::atInputHttpData(const __FlashStringHelper *data, unsigned int timeout) {
+  char buffer[strlen_P((const char *)data) + 1];
+  strcpy_P(buffer, (const char *)data);
+  return atInputHttpData(buffer, timeout);
 }
 
 bool HTTP::atHttpMethodAction(unsigned char method) {
@@ -207,10 +225,22 @@ bool HTTP::setUserAgent(const char userAgent[]) {
   return true;
 }
 
+bool HTTP::setUserAgent(const __FlashStringHelper *userAgent) {
+  char buffer[strlen_P((const char *)userAgent) + 1];
+  strcpy_P(buffer, (const char *)userAgent);
+  return setUserAgent(buffer);
+}
+
 bool HTTP::setHeaders(const char headers[], const char userdataDelimiter[]) {
   if (!initialized) return false;
   atSetHttpParametersValue(F("USERDATA"), headers, userdataDelimiter);
   return true;
+}
+
+bool HTTP::setHeaders(const __FlashStringHelper *headers, const char userdataDelimiter[]) {
+  char buffer[strlen_P((const char *)headers) + 1];
+  strcpy_P(buffer, (const char *)headers);
+  return setHeaders(buffer, userdataDelimiter);
 }
 
 bool HTTP::action(const char method[], const char url[], const char data[]) {
@@ -233,6 +263,24 @@ bool HTTP::action(const char method[], const char url[], const char data[]) {
     if (!atHttpMethodAction(methodIndex(method))) return false;
   }
   return true;
+}
+
+bool HTTP::action(const __FlashStringHelper *method, const char url[], const char data[]) {
+  char buffer[strlen_P((const char *)method) + 1];
+  strcpy_P(buffer, (const char *)method);
+  return action(buffer, url, data);
+}
+
+bool HTTP::action(const __FlashStringHelper *method, const __FlashStringHelper *url, const char data[]) {
+  char buffer[strlen_P((const char *)url) + 1];
+  strcpy_P(buffer, (const char *)url);
+  return action(method, buffer, data);
+}
+
+bool HTTP::action(const __FlashStringHelper *method, const __FlashStringHelper *url, const __FlashStringHelper *data) {
+  char buffer[strlen_P((const char *)data) + 1];
+  strcpy_P(buffer, (const char *)data);
+  return action(method, url, buffer);
 }
 
 bool HTTP::readDataReceived(char buffer[], unsigned long length, unsigned long startAddress) {
