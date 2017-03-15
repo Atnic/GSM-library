@@ -1,12 +1,18 @@
 #include "SMS.h"
 #include "URC.h"
 
-unsigned char SMS::messageStatusIndex(const char *status) {
+unsigned char SMS::messageStatusIndex(const char status[]) {
   if (strcmp_P(status, (const char *)F("REC UNREAD")) == 0) return 0;
   if (strcmp_P(status, (const char *)F("REC READ")) == 0) return 1;
   if (strcmp_P(status, (const char *)F("STO UNSENT")) == 0) return 2;
   if (strcmp_P(status, (const char *)F("STO SENT")) == 0) return 3;
   return 255;
+}
+
+unsigned char SMS::messageStatusIndex(const __FlashStringHelper *status) {
+  char buffer[strlen_P((const char *)status) + 1];
+  strcpy_P(buffer, (const char *)status);
+  return messageStatusIndex(buffer);
 }
 
 bool SMS::atDeleteSMS(unsigned char index, unsigned char delFlag) {
@@ -225,6 +231,24 @@ bool SMS::atSendSMS(const char destination[], char message[]) {
   return true;
 }
 
+bool SMS::atSendSMS(const __FlashStringHelper *destination, char message[]) {
+  char buffer[strlen_P((const char *)destination) + 1];
+  strcpy_P(buffer, (const char *)destination);
+  return atSendSMS(buffer, message);
+}
+
+bool SMS::atSendSMS(const char destination[], const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return atSendSMS(destination, buffer);
+}
+
+bool SMS::atSendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return atSendSMS(destination, buffer);
+}
+
 bool SMS::atShowSMSTextModeParameter(void) {
   const __FlashStringHelper *command = F("AT+CSDH?\r");
   const __FlashStringHelper *response = F("+CSDH: ");
@@ -305,6 +329,24 @@ bool SMS::sendSMS(const char destination[], const char message[]) {
   }
 
   return success;
+}
+
+bool SMS::sendSMS(const __FlashStringHelper *destination, const char message[]) {
+  char buffer[strlen_P((const char *)destination) + 1];
+  strcpy_P(buffer, (const char *)destination);
+  return sendSMS(buffer, message);
+}
+
+bool SMS::sendSMS(const char destination[], const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return sendSMS(destination, buffer);
+}
+
+bool SMS::sendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return sendSMS(destination, buffer);
 }
 
 // bool SMS::selectSMSFormat(bool mode) {

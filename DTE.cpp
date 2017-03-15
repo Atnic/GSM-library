@@ -170,6 +170,12 @@ size_t DTE::write(const char str[]) {
   return 0;
 }
 
+size_t DTE::write(const __FlashStringHelper *str) {
+  char buffer[strlen_P((const char *)str) + 1];
+  strcpy_P(buffer, (const char *)str);
+  return write(buffer);
+}
+
 size_t DTE::readBytes(char buffer[], size_t length) {
   if (hardwareSerial) return hardwareSerial->readBytes(buffer, length);
   if (softwareSerial) return softwareSerial->readBytes(buffer, length);

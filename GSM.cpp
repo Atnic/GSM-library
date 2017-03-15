@@ -88,6 +88,12 @@ bool GSM::atSelectPhonebookMemoryStorage(const char storage[]) {
   return true;
 }
 
+bool GSM::atSelectPhonebookMemoryStorage(const __FlashStringHelper *storage) {
+  char buffer[strlen_P((const char *)storage) + 1];
+  strcpy_P(buffer, (const char *)storage);
+  return atSelectPhonebookMemoryStorage(buffer);
+}
+
 bool GSM::atEnterPIN(void) {
   const __FlashStringHelper *command = F("AT+CPIN?\r");
   const __FlashStringHelper *response = F("+CPIN: ");
@@ -218,6 +224,12 @@ bool GSM::atClock(const char timestamp[]) {
   return true;
 }
 
+bool GSM::atClock(const __FlashStringHelper *timestamp) {
+  char buffer[strlen_P((const char *)timestamp) + 1];
+  strcpy_P(buffer, (const char *)timestamp);
+  return atClock(buffer);
+}
+
 bool GSM::atBatteryCharge(void) {
   const __FlashStringHelper *command = F("AT+CBC\r");
   const __FlashStringHelper *response = F("+CBC: ");
@@ -277,6 +289,12 @@ bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str
   return true;
 }
 
+bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const __FlashStringHelper *str) {
+  char buffer[strlen_P((const char *)str) + 1];
+  strcpy_P(buffer, (const char *)str);
+  return atUnstructuredSupplementaryServiceData(n, buffer);
+}
+
 bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs) {
   char buffer[17 + strlen(str)];  // "AT+CUSD=1,\"{str}\",XX\r"
   const __FlashStringHelper *command = F("AT+CUSD=%d,\"%s\",%d\r");
@@ -286,6 +304,12 @@ bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const char str
   if (!dte->ATCommand(buffer)) return false;
   if (!dte->ATResponseOk()) return false;
   return true;
+}
+
+bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const __FlashStringHelper *str, unsigned char dcs) {
+  char buffer[strlen_P((const char *)str) + 1];
+  strcpy_P(buffer, (const char *)str);
+  return atUnstructuredSupplementaryServiceData(n, buffer, dcs);
 }
 
 /* GSM Class */
@@ -368,6 +392,12 @@ bool GSM::sendServiceData(const char serviceNumber[]) {
   if (!atUnstructuredSupplementaryServiceData(1, serviceNumber))
     return false;
   return true;
+}
+
+bool GSM::sendServiceData(const __FlashStringHelper *serviceNumber) {
+  char buffer[strlen_P((const char *)serviceNumber) + 1];
+  strcpy_P(buffer, (const char *)serviceNumber);
+  return sendServiceData(buffer);
 }
 
 void GSM::cancelServiceData(void) {
