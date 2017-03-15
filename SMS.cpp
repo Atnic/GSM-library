@@ -237,6 +237,12 @@ bool SMS::atSendSMS(const __FlashStringHelper *destination, char message[]) {
   return atSendSMS(buffer, message);
 }
 
+bool SMS::atSendSMS(const char destination[], const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return atSendSMS(destination, buffer);
+}
+
 bool SMS::atSendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message) {
   char buffer[strlen_P((const char *)message) + 1];
   strcpy_P(buffer, (const char *)message);
@@ -329,6 +335,12 @@ bool SMS::sendSMS(const __FlashStringHelper *destination, const char message[]) 
   char buffer[strlen_P((const char *)destination) + 1];
   strcpy_P(buffer, (const char *)destination);
   return sendSMS(buffer, message);
+}
+
+bool SMS::sendSMS(const char destination[], const __FlashStringHelper *message) {
+  char buffer[strlen_P((const char *)message) + 1];
+  strcpy_P(buffer, (const char *)message);
+  return sendSMS(destination, buffer);
 }
 
 bool SMS::sendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message) {

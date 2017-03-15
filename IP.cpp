@@ -79,6 +79,12 @@ bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const __Flas
   return atBearerSettings(cmdType, cid, buffer, paramValue);
 }
 
+bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const char paramTag[], const __FlashStringHelper *paramValue) {
+  char buffer[strlen_P((const char *)paramValue) + 1];
+  strcpy_P(buffer, (const char *)paramValue);
+  return atBearerSettings(cmdType, cid, paramTag, buffer);
+}
+
 bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue) {
   char buffer[strlen_P((const char *)paramValue) + 1];
   strcpy_P(buffer, (const char *)paramValue);
@@ -126,10 +132,34 @@ void IP::setConnectionParamGprs(const __FlashStringHelper *apn, const char user[
   setConnectionParamGprs(buffer, user, pwd, cid);
 }
 
+void IP::setConnectionParamGprs(const char apn[], const __FlashStringHelper *user, const char pwd[], unsigned char cid) {
+  char buffer[strlen_P((const char *)user) + 1];
+  strcpy_P(buffer, (const char *)user);
+  setConnectionParamGprs(apn, buffer, pwd, cid);
+}
+
 void IP::setConnectionParamGprs(const __FlashStringHelper *apn, const __FlashStringHelper *user, const char pwd[], unsigned char cid) {
   char buffer[strlen_P((const char *)user) + 1];
   strcpy_P(buffer, (const char *)user);
   setConnectionParamGprs(apn, buffer, pwd, cid);
+}
+
+void IP::setConnectionParamGprs(const char apn[], const char user[], const __FlashStringHelper *pwd, unsigned char cid) {
+  char buffer[strlen_P((const char *)pwd) + 1];
+  strcpy_P(buffer, (const char *)pwd);
+  setConnectionParamGprs(apn, user, buffer, cid);
+}
+
+void IP::setConnectionParamGprs(const __FlashStringHelper *apn, const char user[], const __FlashStringHelper *pwd, unsigned char cid) {
+  char buffer[strlen_P((const char *)pwd) + 1];
+  strcpy_P(buffer, (const char *)pwd);
+  setConnectionParamGprs(apn, user, buffer, cid);
+}
+
+void IP::setConnectionParamGprs(const char apn[], const __FlashStringHelper *user, const __FlashStringHelper *pwd, unsigned char cid) {
+  char buffer[strlen_P((const char *)pwd) + 1];
+  strcpy_P(buffer, (const char *)pwd);
+  setConnectionParamGprs(apn, user, buffer, cid);
 }
 
 void IP::setConnectionParamGprs(const __FlashStringHelper *apn, const __FlashStringHelper *user, const __FlashStringHelper *pwd, unsigned char cid) {

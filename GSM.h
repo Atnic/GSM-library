@@ -209,6 +209,34 @@ class GSM {
   bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber, unsigned char type, const char text[]);
 
   /**
+   * Command AT+CPBW=
+   * @param  index       Location Number
+   * @param  phoneNumber Phone Number
+   * @param  type        Type of Number:
+   *                     129: National Number type
+   *                     161: National Number type
+   *                     145: International Number type
+   *                     177: Network Specific Number
+   * @param  text        Text associated with number
+   * @return             true: If command successful, false: Otherwise
+   */
+  bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type, const __FlashStringHelper *text);
+
+  /**
+   * Command AT+CPBW=
+   * @param  index       Location Number
+   * @param  phoneNumber Phone Number
+   * @param  type        Type of Number:
+   *                     129: National Number type
+   *                     161: National Number type
+   *                     145: International Number type
+   *                     177: Network Specific Number
+   * @param  text        Text associated with number
+   * @return             true: If command successful, false: Otherwise
+   */
+  bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber, unsigned char type, const __FlashStringHelper *text);
+
+  /**
    * Command AT+CPIN?
    * @return  true: If command successful, false: Otherwise
    */
@@ -226,7 +254,7 @@ class GSM {
    * @param  pin SIM Pin
    * @return     true: If command successful, false: Otherwise
    */
-  bool atEnterPIN(const __FlashStringHelper *phoneNumber);
+  bool atEnterPIN(const __FlashStringHelper *pin);
 
   /**
    * Command AT+CPIN=
@@ -236,13 +264,29 @@ class GSM {
    */
   bool atEnterPIN(const char pin[], const char newPin[]);
 
-    /**
-     * Command AT+CPIN=
-     * @param  pin    SIM Pin
-     * @param  newPin New SIM Pin
-     * @return        true: If command successful, false: Otherwise
-     */
-    bool atEnterPIN(const __FlashStringHelper *pin, const __FlashStringHelper *newPin);
+  /**
+   * Command AT+CPIN=
+   * @param  pin    SIM Pin
+   * @param  newPin New SIM Pin
+   * @return        true: If command successful, false: Otherwise
+   */
+  bool atEnterPIN(const __FlashStringHelper *pin, const char newPin[]);
+
+  /**
+   * Command AT+CPIN=
+   * @param  pin    SIM Pin
+   * @param  newPin New SIM Pin
+   * @return        true: If command successful, false: Otherwise
+   */
+  bool atEnterPIN(const char pin[], const __FlashStringHelper *newPin);
+
+  /**
+   * Command AT+CPIN=
+   * @param  pin    SIM Pin
+   * @param  newPin New SIM Pin
+   * @return        true: If command successful, false: Otherwise
+   */
+  bool atEnterPIN(const __FlashStringHelper *pin, const __FlashStringHelper *newPin);
 
   /**
    * Command AT+CREG?
