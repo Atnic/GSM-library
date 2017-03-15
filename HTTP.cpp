@@ -56,7 +56,7 @@ bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const c
   return atSetHttpParametersValue(buffer, paramValue, userdataDelimiter);
 }
 
-bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue[], const char userdataDelimiter[]) {
+bool HTTP::atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue, const char userdataDelimiter[]) {
   char buffer[strlen_P((const char *)paramValue) + 1];
   strcpy_P(buffer, (const char *)paramValue);
   return atSetHttpParametersValue(paramTag, buffer, userdataDelimiter);

@@ -325,7 +325,7 @@ bool SMS::sendSMS(const char destination[], const char message[]) {
   return success;
 }
 
-bool SMS::sendSMS(const __FlashStringHelper *destination, char message[]) {
+bool SMS::sendSMS(const __FlashStringHelper *destination, const char message[]) {
   char buffer[strlen_P((const char *)destination) + 1];
   strcpy_P(buffer, (const char *)destination);
   return sendSMS(buffer, message);
