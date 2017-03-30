@@ -2,6 +2,7 @@
 #define URC_h
 
 #include <Arduino.h>
+#include "SMS.h"
 
 // Library Interface Description
 class URC {
@@ -37,6 +38,11 @@ class URC {
     char mem[3];
     unsigned char index;
   };
+  struct NewMessage {
+    bool updated = false;
+    struct Message *message;
+    bool waiting = false;
+  };
   struct ServiceDataIndication {
     bool updated = false;
     unsigned char n;
@@ -58,6 +64,9 @@ class URC {
 
   /** +CMTI Unsolicited Result Code */
   struct NewMessageIndication newMessageIndication;
+
+  /** +CMT Unsolicited Result Code */
+  struct NewMessage newMessage;
 
   /** +CUSD Unsolicited Result Code */
   struct ServiceDataIndication serviceDataIndication;

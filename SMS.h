@@ -4,6 +4,14 @@
 #include <Arduino.h>
 #include "DTE.h"
 
+struct MessageIndication {
+  unsigned char mode;
+  unsigned char mt;
+  unsigned char broadcastMessage;
+  unsigned char ds;
+  unsigned char buffer;
+};
+
 struct Message {
   unsigned char index = 0;
   unsigned char status;
@@ -23,6 +31,7 @@ class SMS {
  private:
   DTE *dte;
   bool textMode = false;
+  struct MessageIndication messageIndication;
   struct Message message;
   unsigned int mrSend;
   bool showParameter = false;
@@ -115,6 +124,10 @@ class SMS {
    * @return             true: If command successful, false: Otherwise
    */
   bool atSendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message);
+
+  bool atNewMessageIndications(void);
+
+  bool atNewMessageIndications(unsigned char mode, unsigned char mt = 255, unsigned char broadcastMessage = 255, unsigned char ds = 255, unsigned char buffer = 255);
 
   /**
    * Command AT+CSDH?
@@ -213,6 +226,8 @@ class SMS {
    * @return             true: If command successful, false: Otherwise
    */
   bool sendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message);
+
+  bool newMessageToURC(bool set);
 
   // bool selectSMSFormat(bool mode);
 

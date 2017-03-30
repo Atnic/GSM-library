@@ -169,7 +169,11 @@ bool GSM::atSubscriberNumber(void) {
 
   dte->clearReceivedBuffer();
   if (!dte->ATCommand(command)) return false;
-  if (!dte->ATResponseContain(response) || dte->isResponseOk()) return false;
+  while (true) {
+    if (!dte->ATResponse()) return false;
+    if (dte->isResponseOk()) return true;
+    if (dte->isResponseContain(response)) break;
+  }
   char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
   char *str = strtok(pointer, ",");
   for (unsigned char i = 0; i < 5 && str != NULL; i++) {

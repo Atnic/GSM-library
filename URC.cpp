@@ -3,6 +3,7 @@
 URC Urc;
 
 URC::URC() {
+  newMessage.message = NULL;
 }
 
 bool URC::unsolicitedResultCode(const char urc[]) {
@@ -10,6 +11,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   const __FlashStringHelper *urcHttpAction = F("+HTTPACTION:");
   const __FlashStringHelper *urcEnterPin = F("+CPIN: ");
   const __FlashStringHelper *urcNewMessageIndication = F("+CMTI: ");
+  const __FlashStringHelper *urcNewMessage = F("+CMT: ");
   const __FlashStringHelper *urcServiceDataIndication = F("+CUSD: ");
   const __FlashStringHelper *urcGetLocalTimestamp = F("*PSUTTZ: ");
 
@@ -17,8 +19,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   if ((pointer = strstr_P(urc, (const char *)urcCallReady)) != NULL) {
     callReady.updated = true;
     return true;
-  }
-  if ((pointer = strstr_P(urc, (const char *)urcHttpAction)) != NULL) {
+  } else if ((pointer = strstr_P(urc, (const char *)urcHttpAction)) != NULL) {
     pointer += strlen_P((const char *)urcHttpAction);
     char *str = strtok(pointer, ",");
     unsigned char i = 0;
@@ -30,15 +31,13 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     }
     if (i >= 3) httpAction.updated = true;
     return true;
-  }
-  if ((pointer = strstr_P(urc, (const char *)urcEnterPin)) != NULL) {
+  } else if ((pointer = strstr_P(urc, (const char *)urcEnterPin)) != NULL) {
     pointer += strlen_P((const char *)urcEnterPin);
     char *str = strtok(pointer, "\"");
     strcpy(enterPin.code, str);
     enterPin.updated = true;
     return true;
-  }
-  if ((pointer = strstr_P(urc, (const char *)urcGetLocalTimestamp)) != NULL) {
+  } else if ((pointer = strstr_P(urc, (const char *)urcGetLocalTimestamp)) != NULL) {
     pointer += strlen_P((const char *)urcEnterPin);
     char *str = strtok(pointer, ",\" +");
     for (unsigned char i = 0; i < 8 && str != NULL; i++) {
@@ -53,8 +52,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     }
     psuttz.updated = true;
     return true;
-  }
-  if ((pointer = strstr_P(urc, (const char *)urcNewMessageIndication)) != NULL) {
+  } else if ((pointer = strstr_P(urc, (const char *)urcNewMessageIndication)) != NULL) {
     pointer += strlen_P((const char *)urcNewMessageIndication);
     char *str = strtok(pointer, "\",");
     strcpy(newMessageIndication.mem, str);
@@ -62,8 +60,51 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     newMessageIndication.index = atoi(str);
     newMessageIndication.updated = true;
     return true;
-  }
-  if ((pointer = strstr_P(urc, (const char *)urcServiceDataIndication)) != NULL) {
+  } else if ((pointer = strstr_P(urc, (const char *)urcNewMessage)) != NULL) {
+    pointer += strlen_P((const char *)urcNewMessage);
+    if (newMessage.message == NULL) return false;
+    char *str = strtok(pointer, ",");
+    for (size_t i = 0; str != NULL; i++) {
+      if (i == 0) {
+        if (str[0] == '\"') {
+          strncpy(newMessage.message->address, str + 1, strlen(str + 1) - 1);
+          newMessage.message->address[strlen(str + 1) - 1] = '\0';
+        } else
+          newMessage.message->firstOctet = atoi(str);
+      }
+      if ((newMessage.message->firstOctet & 0x03) == 0x00 ||
+          (newMessage.message->firstOctet & 0x03) == 0x02) {
+        if (i == 2) {
+          if (strlen(str) == 20) {
+            strcpy(newMessage.message->timestamp, str);
+            str = strtok(NULL, ",");
+          }
+          newMessage.message->typeOfAddress = atoi(str);
+        }
+        if (i == 3) newMessage.message->firstOctet = atoi(str);
+        if (i == 4) newMessage.message->pid = atoi(str);
+        if (i == 5) newMessage.message->dataCodingScheme = atoi(str);
+        if (i == 6) {
+          if ((newMessage.message->firstOctet & 0x03) == 0x02) str = strtok(NULL, ",");
+          strncpy(newMessage.message->serviceCenterAddress, str + 1, strlen(str + 1) - 1);
+          newMessage.message->serviceCenterAddress[strlen(str + 1) - 1] = '\0';
+        }
+        if (i == 7) newMessage.message->typeOfSeviceCenterAddress = atoi(str);
+        if (i == 8) newMessage.message->length = atoi(str);
+        if (i == 1)
+          str = strtok(NULL, "\"");
+        else
+          str = strtok(NULL, ",");
+      } else {
+        if (i == 1) {
+          // if(strlen(newMessage.message->address) == 0) newMessage.message->mr = atoi(str);
+        }
+        str = strtok(NULL, ",");
+      }
+    }
+    newMessage.waiting = true;
+    return true;
+  } else if ((pointer = strstr_P(urc, (const char *)urcServiceDataIndication)) != NULL) {
     pointer += strlen_P((const char *)urcServiceDataIndication);
     char *str = strtok(pointer, ",");
     serviceDataIndication.n = atoi(str);
@@ -73,6 +114,10 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     serviceDataIndication.dcs = atoi(str);
     serviceDataIndication.updated = true;
     return true;
+  } else if (newMessage.waiting) {
+    strcpy(newMessage.message->data, urc);
+    newMessage.waiting = false;
+    newMessage.updated = true;
   }
   return false;
 }
@@ -89,5 +134,6 @@ void URC::resetUnsolicitedResultCode(void) {
   httpAction.updated = false;
   psuttz.updated = false;
   newMessageIndication.updated = false;
+  newMessage.updated = false;
   serviceDataIndication.updated = false;
 }
