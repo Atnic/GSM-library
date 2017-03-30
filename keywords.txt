@@ -85,6 +85,7 @@ deleteSMSAll	KEYWORD2
 isTextMode	KEYWORD2
 readSMS	KEYWORD2
 sendSMS	KEYWORD2
+newMessageToURC	KEYWORD2
 isShowParameter	KEYWORD2
 
 unsolicitedResultCode	KEYWORD2
