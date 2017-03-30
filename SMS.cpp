@@ -249,6 +249,52 @@ bool SMS::atSendSMS(const __FlashStringHelper *destination, const __FlashStringH
   return atSendSMS(destination, buffer);
 }
 
+bool SMS::atNewMessageIndications(void) {
+  const __FlashStringHelper *command = F("AT+CNMI?\r");
+  const __FlashStringHelper *response = F("+CNMI: ");
+  struct MessageIndication messageIndication;
+
+  dte->clearReceivedBuffer();
+  if (!dte->ATCommand(command)) return false;
+  if (!dte->ATResponseContain(response)) return false;
+  char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
+  char *str = strtok(pointer, ",");
+  for (size_t i = 0; str != NULL; i++) {
+    if (i == 0) messageIndication.mode = atoi(str);
+    if (i == 1) messageIndication.mt = atoi(str);
+    if (i == 2) messageIndication.broadcastMessage = atoi(str);
+    if (i == 3) messageIndication.ds = atoi(str);
+    if (i == 4) messageIndication.buffer = atoi(str);
+    str = strtok(NULL, ",");
+  }
+  showParameter = (str[0] == '1') ? true : false;
+  if (!dte->ATResponseOk()) return false;
+  this->messageIndication = messageIndication;
+  return true;
+}
+
+bool SMS::atNewMessageIndications(unsigned char mode, unsigned char mt, unsigned char broadcastMessage, unsigned char ds, unsigned char buffer) {
+  const __FlashStringHelper *command;
+  if (mt == 255) command = F("AT+CNMI=%d\r");
+  else if (broadcastMessage == 255) command = F("AT+CNMI=%d,%d\r");
+  else if (ds == 255) command = F("AT+CNMI=%d,%d,%d\r");
+  else if (buffer == 255) command = F("AT+CNMI=%d,%d,%d,%d\r");
+  else command = F("AT+CNMI=%d,%d,%d,%d,%d\r");
+
+  char bufferCommand[19];  // "AT+CNMI=X,X,X,X,X\r"
+  if (mt == 255) sprintf_P(bufferCommand, (const char *)command, mode);
+  else if (broadcastMessage == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt);
+  else if (ds == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage);
+  else if (buffer == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds);
+  else sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds, buffer);
+
+
+  dte->clearReceivedBuffer();
+  if (!dte->ATCommand(bufferCommand)) return false;
+  if (!dte->ATResponseOk()) return false;
+  return atNewMessageIndications();
+}
+
 bool SMS::atShowSMSTextModeParameter(void) {
   const __FlashStringHelper *command = F("AT+CSDH?\r");
   const __FlashStringHelper *response = F("+CSDH: ");
@@ -371,6 +417,21 @@ bool SMS::sendSMS(const __FlashStringHelper *destination, const __FlashStringHel
 //
 //   return success;
 // }
+
+bool SMS::newMessageToURC(bool set) {
+  static bool flag = false;
+  if (!isTextMode()) {
+    if (!atSelectSMSFormat(true)) return false;
+  }
+  if (!isShowParameter()) {
+    if (!atShowSMSTextModeParameter(true)) return false;
+  }
+  if (!flag) {
+    if (atNewMessageIndications()) flag = true;
+  }
+  atNewMessageIndications(messageIndication.mode, set ? 2 : 1);
+  return showParameter;
+}
 
 bool SMS::isShowParameter(void) {
   static bool flag = false;
