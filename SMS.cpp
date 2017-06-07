@@ -225,7 +225,7 @@ bool SMS::atSendSMS(const char destination[], char message[]) {
   strcat(messageBuffer, "\x1A");
   unsigned int length = strlen(messageBuffer);
   dte->write(messageBuffer);
-  dte->readBytes(messageBuffer, length);
+  if (dte->isEcho()) dte->readBytes(messageBuffer, length);
   if (!dte->ATResponseContain(response, 30000)) return false;
   if (!dte->ATResponseOk()) return false;
   return true;
