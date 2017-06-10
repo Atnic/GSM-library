@@ -114,6 +114,18 @@ class DTE {
   bool listen(void);
 
   /**
+   * Flush TX Buffer
+   */
+  void flush(void);
+
+  /**
+   * Send char
+   * @param  c Char to be sent
+   * @return     Total successfully sent char
+   */
+  size_t write(const char c);
+
+  /**
    * Send string char array
    * @param  str String to be sent
    * @return     Total successfully sent char

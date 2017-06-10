@@ -205,7 +205,7 @@ bool SMS::atReadSMS(unsigned char index, unsigned char mode) {
   return true;
 }
 
-bool SMS::atSendSMS(const char destination[], char message[]) {
+bool SMS::atSendSMS(const char destination[], const char message[]) {
   const __FlashStringHelper *command = F("AT+CMGS=\"%s\"\r");
   const __FlashStringHelper *response = F("+CMGS: ");
   char buffer[12 + strlen(destination)];  // "AT+CMGS=\"{destination}\"\r"
@@ -215,23 +215,24 @@ bool SMS::atSendSMS(const char destination[], char message[]) {
   dte->clearReceivedBuffer();
   if (!dte->ATCommand(buffer)) return false;
   if (!dte->ATResponseContain("> ")) return false;
-  char messageBuffer[strlen(message) + 2];
-  strncpy(messageBuffer, "", sizeof(messageBuffer));
-  char *str = strtok(message, "\r");
-  while (str != NULL) {
-    strcat(messageBuffer, str);
-    str = strtok(NULL, "\r");
+  unsigned char length = 0;
+  for (size_t i = 0; i < strlen(message) && length < 160; i++) {
+    if (message[i] != '\r') {
+      dte->write(message[i]);
+      length++;
+    }
   }
-  strcat(messageBuffer, "\x1A");
-  unsigned int length = strlen(messageBuffer);
-  dte->write(messageBuffer);
-  dte->readBytes(messageBuffer, length);
+  dte->write('\x1A');
+  if (dte->isEcho()) {
+    dte->flush();
+    dte->ATResponse(10);
+  }
   if (!dte->ATResponseContain(response, 30000)) return false;
   if (!dte->ATResponseOk()) return false;
   return true;
 }
 
-bool SMS::atSendSMS(const __FlashStringHelper *destination, char message[]) {
+bool SMS::atSendSMS(const __FlashStringHelper *destination, const char message[]) {
   char buffer[strlen_P((const char *)destination) + 1];
   strcpy_P(buffer, (const char *)destination);
   return atSendSMS(buffer, message);
@@ -275,19 +276,28 @@ bool SMS::atNewMessageIndications(void) {
 
 bool SMS::atNewMessageIndications(unsigned char mode, unsigned char mt, unsigned char broadcastMessage, unsigned char ds, unsigned char buffer) {
   const __FlashStringHelper *command;
-  if (mt == 255) command = F("AT+CNMI=%d\r");
-  else if (broadcastMessage == 255) command = F("AT+CNMI=%d,%d\r");
-  else if (ds == 255) command = F("AT+CNMI=%d,%d,%d\r");
-  else if (buffer == 255) command = F("AT+CNMI=%d,%d,%d,%d\r");
-  else command = F("AT+CNMI=%d,%d,%d,%d,%d\r");
+  if (mt == 255)
+    command = F("AT+CNMI=%d\r");
+  else if (broadcastMessage == 255)
+    command = F("AT+CNMI=%d,%d\r");
+  else if (ds == 255)
+    command = F("AT+CNMI=%d,%d,%d\r");
+  else if (buffer == 255)
+    command = F("AT+CNMI=%d,%d,%d,%d\r");
+  else
+    command = F("AT+CNMI=%d,%d,%d,%d,%d\r");
 
   char bufferCommand[19];  // "AT+CNMI=X,X,X,X,X\r"
-  if (mt == 255) sprintf_P(bufferCommand, (const char *)command, mode);
-  else if (broadcastMessage == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt);
-  else if (ds == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage);
-  else if (buffer == 255) sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds);
-  else sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds, buffer);
-
+  if (mt == 255)
+    sprintf_P(bufferCommand, (const char *)command, mode);
+  else if (broadcastMessage == 255)
+    sprintf_P(bufferCommand, (const char *)command, mode, mt);
+  else if (ds == 255)
+    sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage);
+  else if (buffer == 255)
+    sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds);
+  else
+    sprintf_P(bufferCommand, (const char *)command, mode, mt, broadcastMessage, ds, buffer);
 
   dte->clearReceivedBuffer();
   if (!dte->ATCommand(bufferCommand)) return false;

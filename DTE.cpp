@@ -164,6 +164,17 @@ bool DTE::listen(void) {
   return false;
 }
 
+void DTE::flush(void) {
+  if (hardwareSerial) hardwareSerial->flush();
+  if (softwareSerial) softwareSerial->flush();
+}
+
+size_t DTE::write(const char c) {
+  if (hardwareSerial) return hardwareSerial->write(c);
+  if (softwareSerial) return softwareSerial->write(c);
+  return 0;
+}
+
 size_t DTE::write(const char str[]) {
   if (hardwareSerial) return hardwareSerial->write(str);
   if (softwareSerial) return softwareSerial->write(str);
