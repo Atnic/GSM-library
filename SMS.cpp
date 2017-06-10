@@ -216,7 +216,7 @@ bool SMS::atSendSMS(const char destination[], const char message[]) {
   if (!dte->ATCommand(buffer)) return false;
   if (!dte->ATResponseContain("> ")) return false;
   unsigned char length = 0;
-  for (size_t i = 0; i < strlen(message) && length < 159; i++) {
+  for (size_t i = 0; i < strlen(message) && length < 160; i++) {
     if (message[i] != '\r') {
       dte->write(message[i]);
       length++;
