@@ -99,7 +99,7 @@ class SMS {
    * @param  message     Message
    * @return             true: If command successful, false: Otherwise
    */
-  bool atSendSMS(const char destination[], char message[]);
+  bool atSendSMS(const char destination[], const char message[]);
 
   /**
    * Command AT+CMGS=
@@ -107,7 +107,7 @@ class SMS {
    * @param  message     Message
    * @return             true: If command successful, false: Otherwise
    */
-  bool atSendSMS(const __FlashStringHelper *destination, char message[]);
+  bool atSendSMS(const __FlashStringHelper *destination, const char message[]);
 
   /**
    * Command AT+CMGS=
