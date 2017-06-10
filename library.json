@@ -9,13 +9,18 @@
         "maintainer": true
     }, {
         "name": "Winneryanto Dwi Indra",
-        "email": "winneryanto.dwi.indra@gmail.com"
+        "email": "winneryanto.dwi.indra@gmail.com",
+        "url": "https://github.com/Winneryanto",
+    }, {
+        "name": "Zandy Yudha Perwira",
+        "email": "zandy.yudha.p@gmail.com",
+        "url": "https://github.com/GusZandy",
     }],
     "repository": {
         "type": "git",
         "url": "https://github.com/Atnic/GSM-library.git"
     },
-    "version": "0.6.0-alpha",
+    "version": "0.6.1-alpha",
     "license": "MIT",
     "frameworks": ["arduino"],
     "platforms": ["atmelavr"]
