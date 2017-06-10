@@ -23,6 +23,7 @@ Urc	KEYWORD1
 available	KEYWORD2
 isListening	KEYWORD2
 listen	KEYWORD2
+flush	KEYWORD2
 write	KEYWORD2
 readBytes	KEYWORD2
 togglePower	KEYWORD2
