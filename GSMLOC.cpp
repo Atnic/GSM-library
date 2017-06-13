@@ -14,7 +14,10 @@ bool GSMLOC::atGSMLocationAndTime(unsigned char type, unsigned char cid) {
   char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
   char *str = strtok(pointer, ",");
   for (size_t i = 0; i < 5 && str != NULL; i++) {
-    if (i == 0) locationTime.locationCode = str[0] - '0';
+    if (i == 0) {
+      locationTime.locationCode = (unsigned int)atol(str);
+      if (locationTime.locationCode != 0) break;
+    }
     if (type == 1 && i < 3) {
       if (i == 1) strcpy(locationTime.longitude, str);
       if (i == 2) strcpy(locationTime.latitude, str);
@@ -41,7 +44,7 @@ struct LocationTime GSMLOC::getLocationTime(unsigned char cid) {
   if (strlen(locationTime.longitude) > 0) return locationTime;
   if (ip->getConnectionStatus(cid).status == 1) {
     if (!atGSMLocationAndTime(1, cid)) return (struct LocationTime){0, "", "", "", ""};
-    if (locationTime.locationCode == 603) {
+    if (locationTime.locationCode != 0) {
       if (!atGSMLocationAndTime(1, cid)) return (struct LocationTime){0, "", "", "", ""};
     }
   }
