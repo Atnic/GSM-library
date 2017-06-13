@@ -422,10 +422,7 @@ bool DTE::ATResponseContain(const __FlashStringHelper *expected, unsigned long t
 
 bool DTE::ATResponseOk(unsigned long timeout) {
   ATResponse(timeout);
-  if (!isResponseEqual(F("OK")) && !isResponseEqual(F("OK\r"))) return false;
-  if (available()) clearReceivedBuffer();
-  setFlowControlStatusDce(false);
-  return true;
+  return isResponseOk();
 }
 
 bool DTE::isResponseEqual(const char expected[]) {
@@ -451,7 +448,7 @@ bool DTE::isResponseContain(const __FlashStringHelper *expected) {
 }
 
 bool DTE::isResponseOk(void) {
-  if (!isResponseEqual(F("OK"))) return false;
+  if (!isResponseEqual(F("OK")) && !isResponseEqual(F("OK\r"))) return false;
   if (available()) clearReceivedBuffer();
   setFlowControlStatusDce(false);
   return true;
