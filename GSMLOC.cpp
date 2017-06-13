@@ -19,7 +19,7 @@ bool GSMLOC::atGSMLocationAndTime(unsigned char type, unsigned char cid) {
       if (i == 1) strcpy(locationTime.longitude, str);
       if (i == 2) strcpy(locationTime.latitude, str);
     }
-    if (type == 2 || (type == 1 && i == 3)) {
+    if (type == 2 || (type == 1 && 3 <= i && i <= 4)) {
       if (i == 1 || i == 3) strcpy(locationTime.date, str);
       if (i == 2 || i == 4) strcpy(locationTime.time, str);
     }

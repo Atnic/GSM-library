@@ -421,7 +421,8 @@ bool DTE::ATResponseContain(const __FlashStringHelper *expected, unsigned long t
 }
 
 bool DTE::ATResponseOk(unsigned long timeout) {
-  if (!ATResponseEqual(F("OK"), timeout)) return false;
+  ATResponse(timeout);
+  if (!isResponseEqual(F("OK")) && !isResponseEqual(F("OK\r"))) return false;
   if (available()) clearReceivedBuffer();
   setFlowControlStatusDce(false);
   return true;

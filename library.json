@@ -20,7 +20,7 @@
         "type": "git",
         "url": "https://github.com/Atnic/GSM-library.git"
     },
-    "version": "0.6.3-alpha",
+    "version": "0.6.4-alpha",
     "license": "MIT",
     "frameworks": ["arduino"],
     "platforms": ["atmelavr"]
