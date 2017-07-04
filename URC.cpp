@@ -61,6 +61,20 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     newMessageIndication.updated = true;
     return true;
   } else if ((pointer = strstr_P(urc, (const char *)urcNewMessage)) != NULL) {
+    strcpy(newMessage.message->data, urc);
+    newMessage.waiting = true;
+    return true;
+  } else if ((pointer = strstr_P(urc, (const char *)urcServiceDataIndication)) != NULL) {
+    pointer += strlen_P((const char *)urcServiceDataIndication);
+    char *str = strtok(pointer, ",");
+    serviceDataIndication.n = atoi(str);
+    str = strtok(NULL, "\"");
+    strcpy(serviceDataIndication.str, str);
+    str = strtok(NULL, "\",");
+    serviceDataIndication.dcs = atoi(str);
+    serviceDataIndication.updated = true;
+    return true;
+  } else if (newMessage.waiting) {
     pointer += strlen_P((const char *)urcNewMessage);
     if (newMessage.message == NULL) return false;
     char *str = strtok(pointer, ",");
@@ -102,19 +116,6 @@ bool URC::unsolicitedResultCode(const char urc[]) {
         str = strtok(NULL, ",");
       }
     }
-    newMessage.waiting = true;
-    return true;
-  } else if ((pointer = strstr_P(urc, (const char *)urcServiceDataIndication)) != NULL) {
-    pointer += strlen_P((const char *)urcServiceDataIndication);
-    char *str = strtok(pointer, ",");
-    serviceDataIndication.n = atoi(str);
-    str = strtok(NULL, "\"");
-    strcpy(serviceDataIndication.str, str);
-    str = strtok(NULL, "\",");
-    serviceDataIndication.dcs = atoi(str);
-    serviceDataIndication.updated = true;
-    return true;
-  } else if (newMessage.waiting) {
     strcpy(newMessage.message->data, urc);
     newMessage.waiting = false;
     newMessage.updated = true;
