@@ -455,8 +455,7 @@ bool DTE::isResponseOk(void) {
 }
 
 bool DTE::unsolicitedResultCode(void) {
-  debugPrint(F("URC: "));
-  debugPrint(response, true);
+  debugPrint(F("URC"), true);
   return Urc.unsolicitedResultCode(response);
 }
 

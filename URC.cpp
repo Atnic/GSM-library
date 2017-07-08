@@ -61,6 +61,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     newMessageIndication.updated = true;
     return true;
   } else if ((pointer = strstr_P(urc, (const char *)urcNewMessage)) != NULL) {
+    if (newMessage.message == NULL) return false;
     strcpy(newMessage.message->data, urc);
     newMessage.waiting = true;
     return true;
@@ -75,8 +76,8 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     serviceDataIndication.updated = true;
     return true;
   } else if (newMessage.waiting) {
-    pointer += strlen_P((const char *)urcNewMessage);
     if (newMessage.message == NULL) return false;
+    pointer = strstr_P(newMessage.message->data, (const char *)urcNewMessage) + strlen_P((const char *)urcNewMessage);
     char *str = strtok(pointer, ",");
     for (size_t i = 0; str != NULL; i++) {
       if (i == 0) {
