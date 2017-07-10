@@ -150,6 +150,7 @@ bool SMS::atReadSMS(unsigned char index, unsigned char mode) {
   } else
     return false;
   message.index = index;
+  if (!dte->ATResponse(message.data, 163)) return false;
   char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
   char *str = strtok(pointer, "\",");
   for (size_t i = 0; str != NULL; i++) {
@@ -198,7 +199,6 @@ bool SMS::atReadSMS(unsigned char index, unsigned char mode) {
       str = strtok(NULL, ",");
     }
   }
-  if (!dte->ATResponse(message.data, 163)) return false;
   if (!dte->ATResponseOk()) return false;
   this->message = message;
 
