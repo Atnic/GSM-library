@@ -9,11 +9,11 @@ class SIMCOM {
   DTE *dte;
 
   bool allowGetTimestamp = false;
-  bool atSetModeGetTimestamp(bool mode);
 
  public:
   SIMCOM(DTE &dte);
 
+  bool atSetModeGetTimestamp(bool mode = true);
   bool isAllowGetTimestamp(void) { return this->allowGetTimestamp;};
 };
 
