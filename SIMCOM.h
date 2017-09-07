@@ -15,6 +15,6 @@ class SIMCOM {
   SIMCOM(DTE &dte);
 
   bool isAllowGetTimestamp(void) { return this->allowGetTimestamp;};
-}
+};
 
 #endif
