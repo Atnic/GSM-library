@@ -407,3 +407,9 @@ bool GSM::sendServiceData(const __FlashStringHelper *serviceNumber) {
 void GSM::cancelServiceData(void) {
   atUnstructuredSupplementaryServiceData(2);
 }
+
+bool GSM::setOwnNumber(const char ownNumber[]) {
+  if(!atSelectPhonebookMemoryStorage("ON")) return false;
+  if(!atWritePhonebookEntry('1', ownNumber)) return false;
+  return true;
+}

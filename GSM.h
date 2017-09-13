@@ -473,6 +473,12 @@ class GSM {
    * Cancel/close USSD session
    */
   void cancelServiceData(void);
+
+  /**
+  *
+  *
+  */
+  bool setOwnNumber(const char ownNumber[]);
 };
 
 #endif
