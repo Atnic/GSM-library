@@ -16,3 +16,7 @@ bool SIMCOM::atSetModeGetTimestamp(bool mode) {
 SIMCOM::SIMCOM(DTE &dte) {
   this->dte = &dte;
 }
+
+bool SIMCOM::setModeGetTimestamp(bool mode) {
+  return atSetModeGetTimestamp(mode);
+}
