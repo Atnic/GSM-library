@@ -422,6 +422,10 @@ void GSM::cancelServiceData(void) {
 
 bool GSM::setOwnNumber(const char ownNumber[]) {
   if(!atSelectPhonebookMemoryStorage("ON")) return false;
+<<<<<<< HEAD
   if(!atWritePhonebookEntry(1, ownNumber)) return false;
+=======
+  if(!atWritePhonebookEntry('1', ownNumber)) return false;
+>>>>>>> c7919e2c968dc33ae6f7a9306f915da69174fecf
   return true;
 }
