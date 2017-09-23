@@ -448,7 +448,7 @@ bool DTE::isResponseContain(const __FlashStringHelper *expected) {
 }
 
 bool DTE::isResponseOk(void) {
-  if (!isResponseEqual(F("OK")) || !isResponseEqual(F("OK\r"))) return false;
+  if (!(isResponseEqual(F("OK")) || isResponseEqual(F("OK\r")))) return false;
   if (available()) clearReceivedBuffer();
   setFlowControlStatusDce(false);
   return true;
