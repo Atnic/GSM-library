@@ -88,6 +88,18 @@ bool GSM::atSelectPhonebookMemoryStorage(const char storage[]) {
   return true;
 }
 
+bool GSM::atWritePhonebookEntry(unsigned char index, const char phoneNumber[]) {
+  const __FlashStringHelper *command = F("AT+CPBW=%d,\"%s\"\r");
+  char buffer[12 + strlen(phoneNumber)];
+
+  sprintf_P(buffer, (const char *)command, index, phoneNumber);
+
+  dte->clearReceivedBuffer();
+  if (!dte->ATCommand(buffer)) return false;
+  if (!dte->ATResponseOk()) return false;
+  return true;
+}
+
 bool GSM::atSelectPhonebookMemoryStorage(const __FlashStringHelper *storage) {
   char buffer[strlen_P((const char *)storage) + 1];
   strcpy_P(buffer, (const char *)storage);
@@ -406,4 +418,10 @@ bool GSM::sendServiceData(const __FlashStringHelper *serviceNumber) {
 
 void GSM::cancelServiceData(void) {
   atUnstructuredSupplementaryServiceData(2);
+}
+
+bool GSM::setOwnNumber(const char ownNumber[]) {
+  if(!atSelectPhonebookMemoryStorage("ON")) return false;
+  if(!atWritePhonebookEntry(1, ownNumber)) return false;
+  return true;
 }
