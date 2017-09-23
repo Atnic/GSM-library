@@ -173,6 +173,7 @@ bool GSM::atSubscriberNumber(void) {
     if (!dte->ATResponse()) return false;
     if (dte->isResponseOk()) return true;
     if (dte->isResponseContain(response)) break;
+    dte->unsolicitedResultCode();
   }
   char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
   char *str = strtok(pointer, ",");

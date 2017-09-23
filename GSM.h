@@ -475,9 +475,8 @@ class GSM {
   void cancelServiceData(void);
 
   /**
-  *
-  *
-  */
+   * Set Own Number
+   */
   bool setOwnNumber(const char ownNumber[]);
 };
 

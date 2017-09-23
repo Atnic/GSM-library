@@ -9,7 +9,6 @@ bool SIMCOM::atSetModeGetTimestamp(bool mode) {
   dte->clearReceivedBuffer();
   if (!dte->ATCommand(buffer)) return false;
   if (!dte->ATResponseOk()) return false;
-  this->allowGetTimestamp = mode;
   return true;
 }
 
