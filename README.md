@@ -1,2 +1,2 @@
 # GSM-library
-GSM SIM900 Library for Arduino
+GSM SIM900/SIM800 Library for Arduino

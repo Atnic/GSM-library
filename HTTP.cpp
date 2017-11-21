@@ -289,9 +289,9 @@ bool HTTP::action(const char method[], const char url[], const char data[]) {
   if (!initialized) return false;
   if (!getStatus().status == 0) return false;
   if (strstr_P(url, (const char *)F("https://")) != NULL) {
-    if (!atSslHttp(true)) return false;
+    atSslHttp(true);
   } else {
-    if (!atSslHttp(false)) return false;
+    atSslHttp(false);
   }
   if (!atSetHttpParametersValue(F("URL"), url)) return false;
   if ((methodIndex(method) == 1) && strlen(data) > 0) {
