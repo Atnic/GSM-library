@@ -1,7 +1,7 @@
 {
     "name": "GSM Library",
-    "description": "SIM900 Library that using Flow Control for higher baudrate and minimum error rate.",
-    "keywords": "arduino, gsm, sim900",
+    "description": "SIM900/SIM800 Library that using Flow Control for higher baudrate and minimum error rate.",
+    "keywords": "arduino, gsm, sim900, sim800",
     "authors": [{
         "name": "Farid Inawan",
         "email": "frdteknikelektro@gmail.com",
@@ -20,7 +20,7 @@
         "type": "git",
         "url": "https://github.com/Atnic/GSM-library.git"
     },
-    "version": "0.7.0-alpha",
+    "version": "0.7.1-alpha",
     "license": "MIT",
     "frameworks": ["arduino"],
     "platforms": ["atmelavr"]
