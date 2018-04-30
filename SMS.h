@@ -229,7 +229,7 @@ class SMS {
 
   bool newMessageToURC(bool set);
 
-  // bool selectSMSFormat(bool mode);
+  bool selectSMSFormat(bool mode);
 
   /**
    * Is show extended parameter for +CGMR
