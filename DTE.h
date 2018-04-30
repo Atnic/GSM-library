@@ -60,7 +60,7 @@ class DTE {
    *             same as dceByDte
    * @return     true: If command successful, false: Otherwise
    */
-  bool atSetLocalDataFlowControl(unsigned char dce, unsigned char dte);
+  bool atSetLocalDataFlowControl(unsigned char dce, unsigned char dte = 0);
 
   /**
    * Command AT+IPR?
