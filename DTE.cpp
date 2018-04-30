@@ -76,13 +76,12 @@ bool DTE::atSetLocalDataFlowControl(void) {
 }
 
 bool DTE::atSetLocalDataFlowControl(unsigned char dce, unsigned char dte) {
-  const __FlashStringHelper *command = F("AT+IFC=%d,%d;&W\r");
   char buffer[15];  // "AT+IFC=X,X;&W\r"
 
   if (dte == 1)
     sprintf_P(buffer, (const char *) F("AT+IFC=%d,%d;&W\r"), dce, dte);
   else
-    sprintf_P(buffer, (const char *) F("AT+IFC=%d;&W\r"), dce, dte);
+    sprintf_P(buffer, (const char *) F("AT+IFC=%d;&W\r"), dce);
 
   clearReceivedBuffer();
   if (!ATCommand(buffer)) return false;
