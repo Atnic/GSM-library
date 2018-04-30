@@ -316,7 +316,7 @@ class DTE {
    * @param  dte DTE by DCE
    * @return     true: If command successful, false: Otherwise
    */
-  bool setFlowControl(unsigned char dce, unsigned char dte);
+  bool setFlowControl(unsigned char dce, unsigned char dte = 0);
 
   /**
    * Set Flow Control Status on DCE
