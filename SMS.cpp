@@ -339,10 +339,7 @@ SMS::SMS(DTE &dte) {
 }
 
 bool SMS::isTextMode(void) {
-  static bool flag = false;
-  if (!flag) {
-    if (atSelectSMSFormat()) flag = true;
-  }
+  atSelectSMSFormat();
   return textMode;
 }
 
@@ -429,24 +426,18 @@ bool SMS::sendSMS(const __FlashStringHelper *destination, const __FlashStringHel
 // }
 
 bool SMS::newMessageToURC(bool set) {
-  static bool flag = false;
   if (!isTextMode()) {
     if (!atSelectSMSFormat(true)) return false;
   }
   if (!isShowParameter()) {
     if (!atShowSMSTextModeParameter(true)) return false;
   }
-  if (!flag) {
-    if (atNewMessageIndications()) flag = true;
-  }
+  atNewMessageIndications();
   atNewMessageIndications(messageIndication.mode, set ? 2 : 1);
   return showParameter;
 }
 
 bool SMS::isShowParameter(void) {
-  static bool flag = false;
-  if (!flag) {
-    if (atShowSMSTextModeParameter()) flag = true;
-  }
+  atShowSMSTextModeParameter());
   return showParameter;
 }
