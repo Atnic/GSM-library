@@ -423,6 +423,6 @@ bool SMS::newMessageToURC(bool set) {
 }
 
 bool SMS::isShowParameter(void) {
-  atShowSMSTextModeParameter());
+  atShowSMSTextModeParameter();
   return showParameter;
 }
