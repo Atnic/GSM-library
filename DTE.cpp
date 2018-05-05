@@ -287,6 +287,11 @@ bool DTE::AT(void) {
 }
 
 bool DTE::ATCommand(const char at[]) {
+  if (powerDown) {
+    debugPrint(F("Power Down"), true);
+    return false;
+  }
+
   debugPrint("Command: ");
   debugPrint(at, true);
 
