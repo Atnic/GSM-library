@@ -343,7 +343,7 @@ GSM::GSM(DTE &dte) {
 
 struct Operator GSM::getOperator(unsigned char format) {
   if (strlen(selectedOperator.operNumeric) == 0) {
-    if (getNetworkRegistration().status == 1) {
+    if (getNetworkRegistration().status == 1 || getNetworkRegistration().status == 5) {
       atOperatorSelection(3, 2);
       atOperatorSelection();
     }
