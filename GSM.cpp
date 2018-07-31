@@ -352,7 +352,7 @@ struct Operator GSM::getOperator(unsigned char format) {
     format = 0;
   if (format < 2) {
     if (selectedOperator.format != format || strlen(selectedOperator.oper) == 0) {
-      if (getNetworkRegistration().status == 1) {
+      if (getNetworkRegistration().status == 1 || getNetworkRegistration().status == 5) {
         atOperatorSelection(3, format);
         atOperatorSelection();
       }
@@ -362,7 +362,7 @@ struct Operator GSM::getOperator(unsigned char format) {
 }
 
 struct PhonebookMemoryStorage GSM::getPhonebookMemoryStrorage(void) {
-  if (getNetworkRegistration().status == 1)
+  if (getNetworkRegistration().status == 1 || getNetworkRegistration().status == 5)
     atSelectPhonebookMemoryStorage();
   return phonebookMemoryStorage;
 }
@@ -395,7 +395,7 @@ struct Clock GSM::getClock(void) {
 
 struct SubscriberNumber GSM::getSubscriberNumber(void) {
   if (strlen(subscriberNumber.number) == 0)
-    if (getNetworkRegistration().status == 1)
+    if (getNetworkRegistration().status == 1 || getNetworkRegistration().status == 5)
       atSubscriberNumber();
   return subscriberNumber;
 }
