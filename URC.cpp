@@ -6,7 +6,7 @@ URC::URC() {
   newMessage.message = NULL;
 }
 
-bool URC::unsolicitedResultCode(const char urc[]) {
+bool URC::unsolicitedResultCode(const char urcResponse[]) {
   const __FlashStringHelper *urcCallReady = F("Call Ready");
   const __FlashStringHelper *urcHttpAction = F("+HTTPACTION:");
   const __FlashStringHelper *urcEnterPin = F("+CPIN: ");
@@ -16,6 +16,9 @@ bool URC::unsolicitedResultCode(const char urc[]) {
   const __FlashStringHelper *urcGetLocalTimestamp = F("*PSUTTZ: ");
 
   char *pointer;
+  char urc[strlen(urcResponse) + 1];
+
+  strcpy(urc, urcResponse);
   if ((pointer = strstr_P(urc, (const char *)urcCallReady)) != NULL) {
     callReady.updated = true;
     return true;
@@ -38,7 +41,7 @@ bool URC::unsolicitedResultCode(const char urc[]) {
     enterPin.updated = true;
     return true;
   } else if ((pointer = strstr_P(urc, (const char *)urcGetLocalTimestamp)) != NULL) {
-    pointer += strlen_P((const char *)urcEnterPin);
+    pointer += strlen_P((const char *)urcGetLocalTimestamp);
     char *str = strtok(pointer, ",\" +");
     for (unsigned char i = 0; i < 8 && str != NULL; i++) {
       if (i == 0) psuttz.year = atoi(str);
