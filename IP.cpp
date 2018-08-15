@@ -13,7 +13,7 @@ bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const char p
   } else
     return false;
 
-  const __FlashStringHelper *response = F("+SAPBR: ");
+  const __FlashStringHelper *response = F("+SAPBR:");
 
   bearerProfile = this->bearerProfile[cid - 1];
   dte->clearReceivedBuffer();

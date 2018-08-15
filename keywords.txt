@@ -87,6 +87,7 @@ isTextMode	KEYWORD2
 readSMS	KEYWORD2
 sendSMS	KEYWORD2
 newMessageToURC	KEYWORD2
+selectSMSFormat	KEYWORD2
 isShowParameter	KEYWORD2
 
 unsolicitedResultCode	KEYWORD2

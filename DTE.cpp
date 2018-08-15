@@ -76,10 +76,12 @@ bool DTE::atSetLocalDataFlowControl(void) {
 }
 
 bool DTE::atSetLocalDataFlowControl(unsigned char dce, unsigned char dte) {
-  const __FlashStringHelper *command = F("AT+IFC=%d,%d;&W\r");
-  char buffer[15];  // "AT+IFC=X,X;&W\r"
+  char buffer[16];  // "AT+IFC=X,X;&W\r"
 
-  sprintf_P(buffer, (const char *)command, dce, dte);
+  if (dte == 1)
+    sprintf_P(buffer, (const char *) F("AT+IFC=%d,%d;&W\r"), dce, dte);
+  else
+    sprintf_P(buffer, (const char *) F("AT+IFC=%d;&W\r"), dce);
 
   clearReceivedBuffer();
   if (!ATCommand(buffer)) return false;
@@ -221,7 +223,7 @@ void DTE::togglePower(void) {
     if (isEcho())
       setEcho(false);
     if (getFlowControl().dce == 0)
-      setFlowControl(1, 0);
+      setFlowControl(1);
     setFlowControlStatusDce(false);
     return;
   } else {
@@ -285,6 +287,11 @@ bool DTE::AT(void) {
 }
 
 bool DTE::ATCommand(const char at[]) {
+  if (powerDown) {
+    debugPrint(F("Power Down"), true);
+    return false;
+  }
+
   debugPrint("Command: ");
   debugPrint(at, true);
 
