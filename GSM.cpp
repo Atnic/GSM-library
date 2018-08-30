@@ -176,7 +176,7 @@ bool GSM::atSignalQualityReport(void) {
 
 bool GSM::atSubscriberNumber(void) {
   const __FlashStringHelper *command = F("AT+CNUM\r");
-  const __FlashStringHelper *response = F("+CNUM: ");
+  const __FlashStringHelper *response = F("+CNUM:");
   struct SubscriberNumber subscriberNumber;
 
   dte->clearReceivedBuffer();
@@ -197,7 +197,7 @@ bool GSM::atSubscriberNumber(void) {
     if (i == 4) subscriberNumber.service = str[0] - '0';
     str = strtok(NULL, ",");
   }
-  strcpy(subscriberNumber.characterSet, strtok(subscriberNumber.characterSet, "\""));
+  strcpy(subscriberNumber.characterSet, strtok(subscriberNumber.characterSet, " \""));
   strcpy(subscriberNumber.number, strtok(subscriberNumber.number, "\""));
   if (!dte->ATResponseOk()) return false;
   this->subscriberNumber = subscriberNumber;
