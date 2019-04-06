@@ -9,6 +9,9 @@ class GPRS {
   DTE *dte;
   bool attached = false;
 
+ public:
+  GPRS(DTE &dte);
+
   /**
    * Command AT+CGATT?
    * @return  true: If command success, false: Otherwise or timeout
@@ -21,9 +24,6 @@ class GPRS {
    * @return       true: If command success, false: Otherwise or timeout
    */
   bool atAttachGPRSService(bool attach);
-
- public:
-  GPRS(DTE &dte);
 
   /**
    * Is GPRS Service attached/available

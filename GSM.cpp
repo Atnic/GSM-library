@@ -1,6 +1,18 @@
 #include "GSM.h"
 #include "URC.h"
 
+/* GSM Class */
+GSM::GSM(DTE &dte) {
+  this->dte = &dte;
+  selectedOperator = (struct Operator){0, 0, "", ""};
+  phonebookMemoryStorage = (struct PhonebookMemoryStorage){"", 0, 0};
+  networkRegistration = (struct NetworkRegistration){0, 4, "", ""};
+  signalQuality = (struct SignalQuality){0, 0};
+  clock = (struct Clock){"", 0, 0, 0, 0, 0, 0, 0};
+  subscriberNumber = (struct SubscriberNumber){"", "", 0, 0, 0};
+  batteryStatus = (struct BatteryStatus){false, 0, 0.0f};
+}
+
 bool GSM::atOperatorSelection(void) {
   const __FlashStringHelper *command = F("AT+COPS?\r");
   const __FlashStringHelper *response = F("+COPS: ");
@@ -327,18 +339,6 @@ bool GSM::atUnstructuredSupplementaryServiceData(unsigned char n, const __FlashS
   char buffer[strlen_P((const char *)str) + 1];
   strcpy_P(buffer, (const char *)str);
   return atUnstructuredSupplementaryServiceData(n, buffer, dcs);
-}
-
-/* GSM Class */
-GSM::GSM(DTE &dte) {
-  this->dte = &dte;
-  selectedOperator = (struct Operator){0, 0, "", ""};
-  phonebookMemoryStorage = (struct PhonebookMemoryStorage){"", 0, 0};
-  networkRegistration = (struct NetworkRegistration){0, 4, "", ""};
-  signalQuality = (struct SignalQuality){0, 0};
-  clock = (struct Clock){"", 0, 0, 0, 0, 0, 0, 0};
-  subscriberNumber = (struct SubscriberNumber){"", "", 0, 0, 0};
-  batteryStatus = (struct BatteryStatus){false, 0, 0.0f};
 }
 
 struct Operator GSM::getOperator(unsigned char format) {

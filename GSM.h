@@ -71,6 +71,9 @@ class GSM {
   struct SubscriberNumber subscriberNumber;
   struct BatteryStatus batteryStatus;
 
+ public:
+  GSM(DTE &dte);
+
   /**
    * Command AT+COPS?
    * @return  true: If command successful, false: Otherwise
@@ -93,22 +96,6 @@ class GSM {
    * @return        true: If command successful, false: Otherwise
    */
   bool atOperatorSelection(unsigned char mode, unsigned char format = 0, const char oper[] = "");
-
-  /**
-   * Command AT+COPS=
-   * @param  mode   Selection mode.
-   *                0: Automatic mode
-   *                1: Manual mode, oper should be present
-   *                3: Setting format
-   *                4: Manual and Automatic, oper should be present, if fail, then
-   *                	 automatic.
-   * @param  format Operator format
-   *                0: Long format alphanumeric
-   *                1: Short format alphanumeric
-   *                2: Numeric format
-   * @param  oper   Operator
-   * @return        true: If command successful, false: Otherwise
-   */
   bool atOperatorSelection(unsigned char mode, unsigned char format, const __FlashStringHelper *oper);
 
   /**
@@ -123,12 +110,6 @@ class GSM {
    * @return         true: If command successful, false: Otherwise
    */
   bool atSelectPhonebookMemoryStorage(const char storage[]);
-
-  /**
-   * Command AT+CPBS=
-   * @param  storage Storage Name
-   * @return         true: If command successful, false: Otherwise
-   */
   bool atSelectPhonebookMemoryStorage(const __FlashStringHelper *storage);
 
   /**
@@ -145,13 +126,6 @@ class GSM {
    * @return             true: If command successful, false: Otherwise
    */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[]);
-
-  /**
-   * Command AT+CPBW=
-   * @param  index       Location Number
-   * @param  phoneNumber Phone Number
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber);
 
   /**
@@ -166,18 +140,6 @@ class GSM {
    * @return             true: If command successful, false: Otherwise
    */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type);
-
-  /**
-   * Command AT+CPBW=
-   * @param  index       Location Number
-   * @param  phoneNumber Phone Number
-   * @param  type        Type of Number:
-   *                     129: National Number type
-   *                     161: National Number type
-   *                     145: International Number type
-   *                     177: Network Specific Number
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber, unsigned char type);
 
   /**
@@ -193,47 +155,8 @@ class GSM {
    * @return             true: If command successful, false: Otherwise
    */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type, const char text[]);
-
-  /**
-   * Command AT+CPBW=
-   * @param  index       Location Number
-   * @param  phoneNumber Phone Number
-   * @param  type        Type of Number:
-   *                     129: National Number type
-   *                     161: National Number type
-   *                     145: International Number type
-   *                     177: Network Specific Number
-   * @param  text        Text associated with number
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber, unsigned char type, const char text[]);
-
-  /**
-   * Command AT+CPBW=
-   * @param  index       Location Number
-   * @param  phoneNumber Phone Number
-   * @param  type        Type of Number:
-   *                     129: National Number type
-   *                     161: National Number type
-   *                     145: International Number type
-   *                     177: Network Specific Number
-   * @param  text        Text associated with number
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atWritePhonebookEntry(unsigned char index, const char phoneNumber[], unsigned char type, const __FlashStringHelper *text);
-
-  /**
-   * Command AT+CPBW=
-   * @param  index       Location Number
-   * @param  phoneNumber Phone Number
-   * @param  type        Type of Number:
-   *                     129: National Number type
-   *                     161: National Number type
-   *                     145: International Number type
-   *                     177: Network Specific Number
-   * @param  text        Text associated with number
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atWritePhonebookEntry(unsigned char index, const __FlashStringHelper *phoneNumber, unsigned char type, const __FlashStringHelper *text);
 
   /**
@@ -248,12 +171,6 @@ class GSM {
    * @return     true: If command successful, false: Otherwise
    */
   bool atEnterPIN(const char pin[]);
-
-  /**
-   * Command AT+CPIN=
-   * @param  pin SIM Pin
-   * @return     true: If command successful, false: Otherwise
-   */
   bool atEnterPIN(const __FlashStringHelper *pin);
 
   /**
@@ -263,29 +180,8 @@ class GSM {
    * @return        true: If command successful, false: Otherwise
    */
   bool atEnterPIN(const char pin[], const char newPin[]);
-
-  /**
-   * Command AT+CPIN=
-   * @param  pin    SIM Pin
-   * @param  newPin New SIM Pin
-   * @return        true: If command successful, false: Otherwise
-   */
   bool atEnterPIN(const __FlashStringHelper *pin, const char newPin[]);
-
-  /**
-   * Command AT+CPIN=
-   * @param  pin    SIM Pin
-   * @param  newPin New SIM Pin
-   * @return        true: If command successful, false: Otherwise
-   */
   bool atEnterPIN(const char pin[], const __FlashStringHelper *newPin);
-
-  /**
-   * Command AT+CPIN=
-   * @param  pin    SIM Pin
-   * @param  newPin New SIM Pin
-   * @return        true: If command successful, false: Otherwise
-   */
   bool atEnterPIN(const __FlashStringHelper *pin, const __FlashStringHelper *newPin);
 
   /**
@@ -328,12 +224,6 @@ class GSM {
    * @return           true: If command successful, false: Otherwise
    */
   bool atClock(const char timestamp[]);
-
-  /**
-   * Command AT+CCLK=
-   * @param  timestamp Timestamp in format
-   * @return           true: If command successful, false: Otherwise
-   */
   bool atClock(const __FlashStringHelper *timestamp);
 
   /**
@@ -367,15 +257,6 @@ class GSM {
    * @return     true: If command successful, false: Otherwise
    */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const char str[]);
-
-  /**
-   * Command AT+CUSD=
-   * @param  n   Control USSD, Code result presentation
-   *             0: Disable
-   *             1: Enable
-   * @param  str USSD Code, ex: *123#
-   * @return     true: If command successful, false: Otherwise
-   */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const __FlashStringHelper *str);
 
   /**
@@ -388,20 +269,7 @@ class GSM {
    * @return     true: If command successful, false: Otherwise
    */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const char str[], unsigned char dcs);
-
-  /**
-   * Command AT+CUSD=
-   * @param  n   Control USSD, Code result presentation
-   *             0: Disable
-   *             1: Enable
-   * @param  str USSD Code, ex: *123#
-   * @param  dcs Cell Broadcast Data Coding Scheme
-   * @return     true: If command successful, false: Otherwise
-   */
   bool atUnstructuredSupplementaryServiceData(unsigned char n, const __FlashStringHelper *str, unsigned char dcs);
-
- public:
-  GSM(DTE &dte);
 
   /**
    * Get current Operator, this method also
@@ -461,12 +329,6 @@ class GSM {
    * @return               true: If command successful, false: Otherwise
    */
   bool sendServiceData(const char serviceNumber[]);
-
-  /**
-   * Send USSD data
-   * @param  serviceNumber String to access USSD, ex: *123#
-   * @return               true: If command successful, false: Otherwise
-   */
   bool sendServiceData(const __FlashStringHelper *serviceNumber);
 
   /**

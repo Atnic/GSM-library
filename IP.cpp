@@ -1,5 +1,14 @@
 #include "IP.h"
 
+/* IP Class */
+IP::IP(DTE &dte, GPRS &gprs) {
+  this->dte = &dte;
+  this->gprs = &gprs;
+  bearerProfile[0] = (struct BearerProfile){1, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
+  bearerProfile[1] = (struct BearerProfile){2, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
+  bearerProfile[2] = (struct BearerProfile){3, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
+}
+
 bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const char paramTag[], const char paramValue[]) {
   char buffer[20 + strlen(paramTag) + strlen(paramValue)];  // "AT+SAPBR=X,X,\"{paramTag}\",\"{paramValue}\"\r"
   struct BearerProfile bearerProfile;
@@ -34,32 +43,32 @@ bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const char p
     if (!dte->ATResponseContain(response)) return false;
     for (unsigned char i = 0; i < 6; i++) {
       if (!dte->ATResponse()) return false;
-      if (dte->isResponseContain("CONTYPE: ")) {
+      if (dte->isResponseContain(F("CONTYPE: "))) {
         const __FlashStringHelper *response = F("CONTYPE: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
         strcpy(bearerProfile.connParam.contype, str);
-      } else if (dte->isResponseContain("APN: ")) {
+      } else if (dte->isResponseContain(F("APN: "))) {
         const __FlashStringHelper *response = F("APN: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
         strcpy(bearerProfile.connParam.apn, str);
-      } else if (dte->isResponseContain("USER: ")) {
+      } else if (dte->isResponseContain(F("USER: "))) {
         const __FlashStringHelper *response = F("USER: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
         strcpy(bearerProfile.connParam.user, str);
-      } else if (dte->isResponseContain("PWD: ")) {
+      } else if (dte->isResponseContain(F("PWD: "))) {
         const __FlashStringHelper *response = F("PWD: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
         strcpy(bearerProfile.connParam.pwd, str);
-      } else if (dte->isResponseContain("PHONENUM: ")) {
+      } else if (dte->isResponseContain(F("PHONENUM: "))) {
         const __FlashStringHelper *response = F("PHONENUM: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
         strcpy(bearerProfile.connParam.phonenum, str);
-      } else if (dte->isResponseContain("RATE: ")) {
+      } else if (dte->isResponseContain(F("RATE: "))) {
         const __FlashStringHelper *response = F("RATE: ");
         char *pointer = strstr_P(dte->getResponse(), (const char *)response) + strlen_P((const char *)response);
         char *str = strtok(pointer, ",\"");
@@ -91,33 +100,24 @@ bool IP::atBearerSettings(unsigned char cmdType, unsigned char cid, const __Flas
   return atBearerSettings(cmdType, cid, paramTag, buffer);
 }
 
-/* IP Class */
-IP::IP(DTE &dte, GPRS &gprs) {
-  this->dte = &dte;
-  this->gprs = &gprs;
-  bearerProfile[0] = (struct BearerProfile){1, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
-  bearerProfile[1] = (struct BearerProfile){2, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
-  bearerProfile[2] = (struct BearerProfile){3, (struct ConnStatus){3, ""}, (struct ConnParam){"", "", "", "", "", 2}};
-}
-
 void IP::setConnectionParamGprs(const char apn[], const char user[], const char pwd[], unsigned char cid) {
   struct ConnParam connParam = this->bearerProfile[cid - 1].connParam;
   bool change = false;
 
-  if (strcmp(connParam.contype, "GPRS") != 0) {
-    atBearerSettings(3, cid, "CONTYPE", "GPRS");
+  if (strcmp_P(connParam.contype, (const char *)F("GPRS")) != 0) {
+    atBearerSettings(3, cid, F("CONTYPE"), F("GPRS"));
     change = true;
   }
-  if (strcmp(connParam.apn, apn) != 0) {
-    atBearerSettings(3, cid, "APN", apn);
+  if (strcmp_P(connParam.apn, apn) != 0) {
+    atBearerSettings(3, cid, F("APN"), apn);
     change = true;
   }
-  if (strcmp(connParam.user, user) != 0) {
-    atBearerSettings(3, cid, "USER", user);
+  if (strcmp_P(connParam.user, user) != 0) {
+    atBearerSettings(3, cid, F("USER"), user);
     change = true;
   }
-  if (strcmp(connParam.pwd, pwd) != 0) {
-    atBearerSettings(3, cid, "PWD", pwd);
+  if (strcmp_P(connParam.pwd, pwd) != 0) {
+    atBearerSettings(3, cid, F("PWD"), pwd);
     change = true;
   }
   if (change) {

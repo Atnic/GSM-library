@@ -80,13 +80,6 @@ class URC {
    * @return     true: If it is URC, false: If it is not
    */
   bool unsolicitedResultCode(const char urcResponse[]);
-
-  /**
-   * Unsolicited Result Code (URC) check, if it URC,
-   * then update URC Object member value
-   * @param  urc Unsolicited Result Code string
-   * @return     true: If it is URC, false: If it is not
-   */
   bool unsolicitedResultCode(const __FlashStringHelper *urc);
 
   /** Reset URC Object member value. This should be called if Module Reset */

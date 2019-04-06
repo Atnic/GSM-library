@@ -36,8 +36,10 @@ class SMS {
   unsigned int mrSend;
   bool showParameter = false;
 
-  unsigned char messageStatusIndex(const char status[]);
+ public:
+  SMS(DTE &dte);
 
+  unsigned char messageStatusIndex(const char status[]);
   unsigned char messageStatusIndex(const __FlashStringHelper *status);
 
   /**
@@ -100,29 +102,8 @@ class SMS {
    * @return             true: If command successful, false: Otherwise
    */
   bool atSendSMS(const char destination[], const char message[]);
-
-  /**
-   * Command AT+CMGS=
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atSendSMS(const __FlashStringHelper *destination, const char message[]);
-
-  /**
-   * Command AT+CMGS=
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atSendSMS(const char destination[], const __FlashStringHelper *message);
-
-  /**
-   * Command AT+CMGS=
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool atSendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message);
 
   bool atNewMessageIndications(void);
@@ -142,9 +123,6 @@ class SMS {
    * @return      true: If command successful, false: Otherwise
    */
   bool atShowSMSTextModeParameter(bool show);
-
- public:
-  SMS(DTE &dte);
 
   /**
    * Delete SMS by specified index
@@ -199,32 +177,8 @@ class SMS {
    * @return             true: If command successful, false: Otherwise
    */
   bool sendSMS(const char destination[], const char message[]);
-
-  /**
-   * Send SMS. If message length longer than 160 character,
-   * this method automatically send multiple SMS.
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool sendSMS(const __FlashStringHelper *destination, const char message[]);
-
-  /**
-   * Send SMS. If message length longer than 160 character,
-   * this method automatically send multiple SMS.
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool sendSMS(const char destination[], const __FlashStringHelper *message);
-
-  /**
-   * Send SMS. If message length longer than 160 character,
-   * this method automatically send multiple SMS.
-   * @param  destination Destination Address/Phone Number
-   * @param  message     Message
-   * @return             true: If command successful, false: Otherwise
-   */
   bool sendSMS(const __FlashStringHelper *destination, const __FlashStringHelper *message);
 
   bool newMessageToURC(bool set);

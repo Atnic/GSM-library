@@ -1,6 +1,11 @@
 #include "SMS.h"
 #include "URC.h"
 
+/* SMS Class */
+SMS::SMS(DTE &dte) {
+  this->dte = &dte;
+}
+
 unsigned char SMS::messageStatusIndex(const char status[]) {
   if (strcmp_P(status, (const char *)F("REC UNREAD")) == 0) return 0;
   if (strcmp_P(status, (const char *)F("REC READ")) == 0) return 1;
@@ -331,11 +336,6 @@ bool SMS::atShowSMSTextModeParameter(bool show) {
   if (!dte->ATResponseOk()) return false;
   showParameter = show;
   return true;
-}
-
-/* SMS Class */
-SMS::SMS(DTE &dte) {
-  this->dte = &dte;
 }
 
 bool SMS::isTextMode(void) {
