@@ -1,6 +1,15 @@
 #include "HTTP.h"
 #include "URC.h"
 
+/* HTTP Class */
+HTTP::HTTP(DTE &dte, IP &ip) {
+  this->dte = &dte;
+  this->ip = &ip;
+  this->initialized = false;
+  this->httpStatus = (struct HttpStatus){"GET", 0, 0};
+  this->serverResponseDataLength = 0;
+}
+
 unsigned char HTTP::methodIndex(const char method[]) {
   if (strcmp_P(method, (const char *)F("GET")) == 0) return 0;
   if (strcmp_P(method, (const char *)F("POST")) == 0) return 1;
@@ -108,7 +117,7 @@ bool HTTP::atInputHttpData(const char data[], unsigned int timeout) {
     i += dte->write(data);
     if (millis() - t > timeout) return false;
   }
-  if (!dte->ATResponseOk()) return false;
+  if (!dte->ATResponseOk(timeout + 500)) return false;
   return true;
 }
 
@@ -218,15 +227,6 @@ bool HTTP::atSslHttp(bool enable) {
   return true;
 }
 
-/* HTTP Class */
-HTTP::HTTP(DTE &dte, IP &ip) {
-  this->dte = &dte;
-  this->ip = &ip;
-  this->initialized = false;
-  this->httpStatus = (struct HttpStatus){"GET", 0, 0};
-  this->serverResponseDataLength = 0;
-}
-
 struct HttpStatus HTTP::getStatus(void) {
   atReadHttpStatus();
   return httpStatus;
@@ -240,7 +240,7 @@ bool HTTP::initialize(unsigned int timeout, unsigned char cid) {
       char buffer[5];
       if (timeout < 30) timeout = 30;
       if (!atSetHttpParametersValue(F("TIMEOUT"), itoa(timeout, buffer, 10))) return false;
-      if (!atSetHttpParametersValue(F("CONTENT"), "application/x-www-form-urlencoded")) return false;
+      if (!atSetHttpParametersValue(F("CONTENT"), "APPLICATION/X-WWW-FORM-URLENCODED")) return false;
       if (!atSetHttpParametersValue(F("REDIR"), "1")) return false;
     }
   } else {
@@ -294,16 +294,14 @@ bool HTTP::action(const char method[], const char url[], const char data[]) {
     atSslHttp(false);
   }
   if (!atSetHttpParametersValue(F("URL"), url)) return false;
-  if ((methodIndex(method) == 1) && strlen(data) > 0) {
-    if (!atInputHttpData(data)) return false;
-  }
-  if (!atHttpMethodAction(methodIndex(method))) return false;
-  if (Urc.httpAction.updated && Urc.httpAction.statusCode == 603) {
+  size_t i = 0;
+  do
+  {
     if ((methodIndex(method) == 1) && strlen(data) > 0) {
       if (!atInputHttpData(data)) return false;
     }
     if (!atHttpMethodAction(methodIndex(method))) return false;
-  }
+  } while (Urc.httpAction.updated && Urc.httpAction.statusCode == 603 && i++ == 0);
   return true;
 }
 

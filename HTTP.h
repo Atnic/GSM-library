@@ -21,15 +21,8 @@ class HTTP {
   unsigned long serverResponseDataLength;
   bool sslEnabled;
 
-  /**
-   * Convert HTTP Method to index
-   * @param  method HTTP Method
-   * @return        index of Method
-   *                0: GET
-   *                1: POST
-   *                2: HEAD
-   */
-  unsigned char methodIndex(const char method[]);
+ public:
+  HTTP(DTE &dte, IP &ip);
 
   /**
    * Convert HTTP Method to index
@@ -39,6 +32,7 @@ class HTTP {
    *                1: POST
    *                2: HEAD
    */
+  unsigned char methodIndex(const char method[]);
   unsigned char methodIndex(const __FlashStringHelper *method);
 
   /**
@@ -69,140 +63,15 @@ class HTTP {
    *                    "USERDATA": Used to set user's data in HTTP Header
    * @param  paramValue Parameter Value
    * @return            true: If command successful, false: Otherwise
+   * @{
    */
   bool atSetHttpParametersValue(const char paramTag[], const char paramValue[], const char userdataDelimiter[] = "");
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const __FlashStringHelper *paramTag, const char paramValue[], const char userdataDelimiter[] = "");
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const char paramTag[], const __FlashStringHelper *paramValue, const char userdataDelimiter[] = "");
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue, const char userdataDelimiter[] = "");
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const char paramTag[], const char paramValue[], const __FlashStringHelper *userdataDelimiter);
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const __FlashStringHelper *paramTag, const char paramValue[], const __FlashStringHelper *userdataDelimiter);
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const char paramTag[], const __FlashStringHelper *paramValue, const __FlashStringHelper *userdataDelimiter);
-
-  /**
-   * Command AT+HTTPPARA
-   * @param  paramTag   Parameter Tag
-   *                    "CID": Context Identifier Used, see IP Class
-   *                    "URL": HTTP Client URL
-   *                    "UA": User Agent
-   *                    "PROIP": IP Address of HTTP Proxy Server
-   *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
-   *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
-   *                    "BREAKEND": Integer end address.
-   *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
-   *                    "CONTENT": Used to set Content-Type in HTTP Header
-   *                    "USERDATA": Used to set user's data in HTTP Header
-   * @param  paramValue Parameter Value
-   * @return            true: If command successful, false: Otherwise
-   */
   bool atSetHttpParametersValue(const __FlashStringHelper *paramTag, const __FlashStringHelper *paramValue, const __FlashStringHelper *userdataDelimiter);
 
   /**
@@ -212,13 +81,6 @@ class HTTP {
    * @return         true: If command successful, false: Otherwise
    */
   bool atInputHttpData(const char data[], unsigned int timeout = 2000);
-
-  /**
-   * Command AT+HTTPDATA
-   * @param  data    POST data
-   * @param  timeout Timeout to input POST data
-   * @return         true: If command successful, false: Otherwise
-   */
   bool atInputHttpData(const __FlashStringHelper *data, unsigned int timeout = 2000);
 
   /**
@@ -258,10 +120,6 @@ class HTTP {
    * @return        true: If command successful, false: Otherwise
    */
   bool atSslHttp(bool enable);
-
- public:
-  HTTP(DTE &dte, IP &ip);
-
   /**
    * Get current HTTP Status
    * @return  HttpStatus Struct
@@ -282,12 +140,6 @@ class HTTP {
    * @return           true: If success, false: Otherwise
    */
   bool setUserAgent(const char userAgent[]);
-
-  /**
-   * Set User Agent
-   * @param  userAgent User Agent string
-   * @return           true: If success, false: Otherwise
-   */
   bool setUserAgent(const __FlashStringHelper *userAgent);
 
   /**
@@ -296,26 +148,8 @@ class HTTP {
    * @return        true: If success, false: Otherwise
    */
   bool setHeaders(const char header[], const char userdataDelimiter[] = "");
-
-  /**
-   * Set Header
-   * @param  header Header string with semicolon demiliter
-   * @return        true: If success, false: Otherwise
-   */
   bool setHeaders(const __FlashStringHelper *header, const char userdataDelimiter[] = "");
-
-  /**
-   * Set Header
-   * @param  header Header string with semicolon demiliter
-   * @return        true: If success, false: Otherwise
-   */
   bool setHeaders(const char header[], const __FlashStringHelper *userdataDelimiter);
-
-  /**
-   * Set Header
-   * @param  header Header string with semicolon demiliter
-   * @return        true: If success, false: Otherwise
-   */
   bool setHeaders(const __FlashStringHelper *header, const __FlashStringHelper *userdataDelimiter);
 
   /**
@@ -326,68 +160,12 @@ class HTTP {
    * @return        true: If success, false: Otherwise
    */
   bool action(const char method[], const char url[], const char data[] = NULL);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const __FlashStringHelper *method, const char url[], const char data[] = NULL);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const char method[], const __FlashStringHelper *url, const char data[] = NULL);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const __FlashStringHelper *method, const __FlashStringHelper *url, const char data[] = NULL);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const char method[], const char url[], const __FlashStringHelper *data);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const __FlashStringHelper *method, const char url[], const __FlashStringHelper *data);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const char method[], const __FlashStringHelper *url, const __FlashStringHelper *data);
-
-  /**
-   * Submit HTTP Action
-   * @param  method Method "GET", "POST", or "HEAD"
-   * @param  url    HTTP Client URL
-   * @param  data   POST data, if action is POST
-   * @return        true: If success, false: Otherwise
-   */
   bool action(const __FlashStringHelper *method, const __FlashStringHelper *url, const __FlashStringHelper *data);
 
   /**

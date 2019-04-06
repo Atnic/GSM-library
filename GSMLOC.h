@@ -19,6 +19,9 @@ class GSMLOC {
   IP *ip;
   struct LocationTime locationTime;
 
+ public:
+  GSMLOC(DTE &dte, IP &ip);
+
   /**
    * Command AT+GSMLOC=
    * @param  type Type of command
@@ -28,9 +31,6 @@ class GSMLOC {
    * @return      true: If successful, false: Otherwise
    */
   bool atGSMLocationAndTime(unsigned char type, unsigned char cid = 1);
-
- public:
-  GSMLOC(DTE &dte, IP &ip);
 
   /**
    * getLocationTime

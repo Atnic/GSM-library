@@ -14,6 +14,37 @@ void DTE::debugPrint(const __FlashStringHelper *message, bool returnChar) {
   debugPrint(buffer, returnChar);
 }
 
+/* DTE Class */
+DTE::DTE(HardwareSerial &hardwareSerial, int powerPin, bool debug) {
+  this->hardwareSerial = &hardwareSerial;
+  this->softwareSerial = NULL;
+  this->powerPin = powerPin;
+  this->debug = debug;
+  this->response[0] = '\0';
+  this->echo = true;
+  this->flowControl = (struct FlowControl){0, true, 0, true};
+  this->baudrate = -1;
+  this->powerDown = true;
+
+  pinMode(this->powerPin, OUTPUT);
+  digitalWrite(this->powerPin, LOW);
+}
+
+DTE::DTE(SoftwareSerial &softwareSerial, int powerPin, bool debug) {
+  this->hardwareSerial = NULL;
+  this->softwareSerial = &softwareSerial;
+  this->powerPin = powerPin;
+  this->debug = debug;
+  this->response[0] = '\0';
+  this->echo = true;
+  this->flowControl = (struct FlowControl){0, true, 0, true};
+  this->baudrate = -1;
+  this->powerDown = true;
+
+  pinMode(this->powerPin, OUTPUT);
+  digitalWrite(this->powerPin, LOW);
+}
+
 bool DTE::atReIssueLastCommand(void) {
   const __FlashStringHelper *command = F("A/\r");
 
@@ -117,37 +148,6 @@ bool DTE::atSetFixedLocalRate(long baudrate) {
   if (!ATResponseOk()) return false;
   this->baudrate = baudrate;
   return true;
-}
-
-/* DTE Class */
-DTE::DTE(HardwareSerial &hardwareSerial, int powerPin, bool debug) {
-  this->hardwareSerial = &hardwareSerial;
-  this->softwareSerial = NULL;
-  this->powerPin = powerPin;
-  this->debug = debug;
-  this->response[0] = '\0';
-  this->echo = true;
-  this->flowControl = (struct FlowControl){0, true, 0, true};
-  this->baudrate = -1;
-  this->powerDown = true;
-
-  pinMode(this->powerPin, OUTPUT);
-  digitalWrite(this->powerPin, LOW);
-}
-
-DTE::DTE(SoftwareSerial &softwareSerial, int powerPin, bool debug) {
-  this->hardwareSerial = NULL;
-  this->softwareSerial = &softwareSerial;
-  this->powerPin = powerPin;
-  this->debug = debug;
-  this->response[0] = '\0';
-  this->echo = true;
-  this->flowControl = (struct FlowControl){0, true, 0, true};
-  this->baudrate = -1;
-  this->powerDown = true;
-
-  pinMode(this->powerPin, OUTPUT);
-  digitalWrite(this->powerPin, LOW);
 }
 
 int DTE::available(void) {

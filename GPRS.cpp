@@ -1,6 +1,11 @@
 #include "GPRS.h"
 #include "URC.h"
 
+/* GPRS Class */
+GPRS::GPRS(DTE &dte) {
+  this->dte = &dte;
+}
+
 bool GPRS::atAttachGPRSService(void) {
   const __FlashStringHelper *command = F("AT+CGATT?\r");
   const __FlashStringHelper *response = F("+CGATT: ");
@@ -26,11 +31,6 @@ bool GPRS::atAttachGPRSService(bool attach) {
   if (!dte->ATResponseOk(10000)) return false;
   this->attached = attach;
   return true;
-}
-
-/* GPRS Class */
-GPRS::GPRS(DTE &dte) {
-  this->dte = &dte;
 }
 
 bool GPRS::isAttached(void) {

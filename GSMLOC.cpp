@@ -1,5 +1,12 @@
 #include "GSMLOC.h"
 
+/* GSMLOC Class */
+GSMLOC::GSMLOC(DTE &dte, IP &ip) {
+  this->dte = &dte;
+  this->ip = &ip;
+  locationTime = (struct LocationTime){0, "", "", "", ""};
+}
+
 bool GSMLOC::atGSMLocationAndTime(unsigned char type, unsigned char cid) {
   const __FlashStringHelper *command = F("AT+CIPGSMLOC=%d,%d\r");
   const __FlashStringHelper *response = F("+CIPGSMLOC: ");
@@ -31,13 +38,6 @@ bool GSMLOC::atGSMLocationAndTime(unsigned char type, unsigned char cid) {
   if (!dte->ATResponseOk()) return false;
   this->locationTime = locationTime;
   return true;
-}
-
-/* GSMLOC Class */
-GSMLOC::GSMLOC(DTE &dte, IP &ip) {
-  this->dte = &dte;
-  this->ip = &ip;
-  locationTime = (struct LocationTime){0, "", "", "", ""};
 }
 
 struct LocationTime GSMLOC::getLocationTime(unsigned char cid) {

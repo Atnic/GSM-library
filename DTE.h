@@ -25,6 +25,19 @@ class DTE {
   long baudrate;
   bool powerDown;
 
+ protected:
+  /**
+   * Sent debugging message via Serial.
+   * @param message    Debug message
+   * @param returnChar true: add new line, false: no new line (default)
+   */
+  void debugPrint(const char message[], bool returnChar = false);
+  void debugPrint(const __FlashStringHelper *message, bool returnChar = false);
+
+ public:
+  DTE(HardwareSerial &hardwareSerial, int pinPower, bool debug = false);
+  DTE(SoftwareSerial &softwareSerial, int pinPower, bool debug = false);
+
   /**
    * Command A/
    * @return  true: If command successful, false: Otherwise
@@ -75,25 +88,6 @@ class DTE {
    */
   bool atSetFixedLocalRate(long baudrate);
 
- protected:
-  /**
-   * Sent debugging message via Serial.
-   * @param message    Debug message
-   * @param returnChar true: add new line, false: no new line (default)
-   */
-  void debugPrint(const char message[], bool returnChar = false);
-
-  /**
-   * Sent debugging message via Serial.
-   * @param message    Debug message
-   * @param returnChar true: add new line, false: no new line (default)
-   */
-  void debugPrint(const __FlashStringHelper *message, bool returnChar = false);
-
- public:
-  DTE(HardwareSerial &hardwareSerial, int pinPower, bool debug = false);
-  DTE(SoftwareSerial &softwareSerial, int pinPower, bool debug = false);
-
   /**
    * Check received buffer
    * @return  Total received char available
@@ -131,12 +125,6 @@ class DTE {
    * @return     Total successfully sent char
    */
   size_t write(const char str[]);
-
-  /**
-   * Send string char array
-   * @param  str String to be sent
-   * @return     Total successfully sent char
-   */
   size_t write(const __FlashStringHelper *str);
 
   /**
@@ -166,12 +154,6 @@ class DTE {
    * @return    true: if nothing is wrong, false: otherwise
    */
   bool ATCommand(const char at[]);
-
-  /**
-   * Send AT Command
-   * @param  at Command (Flash Memory)
-   * @return    true: if nothing is wrong, false: otherwise
-   */
   bool ATCommand(const __FlashStringHelper *at);
 
   /**
@@ -200,14 +182,6 @@ class DTE {
    * @see   ATResponse()
    */
   bool ATResponseEqual(const char expected[], unsigned long timeout = 500);
-
-  /**
-   * Get AT Response, and check if response is equal with expected
-   * @param  expected     Expected response (Flash Memory)
-   * @param  timeout      Timeout in millis, dafault: 500
-   * @return              true: If response as expected, false: Otherwise or timeout
-   * @see   ATResponse()
-   */
   bool ATResponseEqual(const __FlashStringHelper *expected, unsigned long timeout = 500);
 
   /**
@@ -218,14 +192,6 @@ class DTE {
    * @see   ATResponse()
    */
   bool ATResponseContain(const char expected[], unsigned long timeout = 500);
-
-  /**
-   * Get AT Response, and check if response is contain with expected
-   * @param  expected     Expected response (Flash Memory)
-   * @param  timeout      Timeout in millis, default: 500
-   * @return              true: If response contain expected, false: Otherwise or timeout
-   * @see   ATResponse()
-   */
   bool ATResponseContain(const __FlashStringHelper *expected, unsigned long timeout = 500);
 
   /**
@@ -243,12 +209,6 @@ class DTE {
    * @return          true: If last response as expected, false: Otherwise or timeout
    */
   bool isResponseEqual(const char expected[]);
-
-  /**
-   * Check that last response is equal as expected
-   * @param  expected Expected response (Flash Memory)
-   * @return          true: If last response as expected, false: Otherwise or timeout
-   */
   bool isResponseEqual(const __FlashStringHelper *expected);
 
   /**
@@ -257,12 +217,6 @@ class DTE {
    * @return          true: If last response contain expected, false: Otherwise or timeout
    */
   bool isResponseContain(const char expected[]);
-
-  /**
-   * Check that last response is contain expected
-   * @param  expected Expected response (Flash Memory)
-   * @return          true: If last response contain expected, false: Otherwise or timeout
-   */
   bool isResponseContain(const __FlashStringHelper *expected);
 
   /**
