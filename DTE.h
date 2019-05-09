@@ -177,7 +177,7 @@ class DTE {
   /**
    * Get AT Response, and check if response is equal with expected
    * @param  expected     Expected response
-   * @param  timeout      Timeout in millis, dafault: 500
+   * @param  timeout      Timeout in millis, default: 500
    * @return              true: If response as expected, false: Otherwise or timeout
    * @see   ATResponse()
    */

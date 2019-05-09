@@ -55,7 +55,7 @@ class HTTP {
    *                    "UA": User Agent
    *                    "PROIP": IP Address of HTTP Proxy Server
    *                    "PROPORT": Port of HTTP Proxy Server
-   *                    "REDIR": If set to 1, automatic redirect, otherwis no, default is 0
+   *                    "REDIR": If set to 1, automatic redirect, otherwise no, default is 0
    *                    "BREAK": Integer start address. Parameter for Method GET, for resuming broken transfer, start from BREAK to BREAKEND
    *                    "BREAKEND": Integer end address.
    *                    "TIMEOUT": HTTP Session Timeout value, range 30 - 1000 second, default is 120
