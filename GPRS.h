@@ -20,7 +20,7 @@ class GPRS {
 
   /**
    * Command AT+CGATT=
-   * @param attach true: Force attach, false: dettach GPRS Service
+   * @param attach true: Force attach, false: detach GPRS Service
    * @return       true: If command success, false: Otherwise or timeout
    */
   bool atAttachGPRSService(bool attach);

@@ -91,7 +91,7 @@ class IP {
   struct ConnParam getConnectionParam(unsigned char cid = 1);
 
   /**
-   * Open connection, register to network, get IP Adresses
+   * Open connection, register to network, get IP Addresses
    * @param  cid Context identifier, default: 1
    * @return     true: If success, false: Otherwise
    */
